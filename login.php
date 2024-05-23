@@ -18,8 +18,11 @@ session_start();
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
 
-    
+
+
     <style>
         /* Custom CSS for logo and text */
         #logo-text {
@@ -39,33 +42,54 @@ session_start();
             height: auto;
             margin-right: 10px;
         }
-        .modal-overlay {
-  pointer-events: none;
-}
-.input-group-append {
-  z-index: 1;
-}
 
+        .modal-overlay {
+            pointer-events: none;
+        }
+
+        .input-group-append {
+            z-index: 1;
+        }
+
+        .parsley-errors-list {
+            color: red;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .parsley-errors-list li {
+            margin: 0;
+        }
+
+        .form-control.parsley-error {
+            border-color: red;
+        }
+
+        .modal-body {
+            min-height: 300px;
+            /* Adjust based on your content */
+        }
     </style>
 
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center h-screen" style="background-color: var(--secondary-color);">
-<?php
+    <?php
 
-// Handle user registration
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_user'])) {
-    $fullname = $_POST['fullname'];
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $mobile = $_POST['mobile'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    // Handle user registration
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_user'])) {
+        $fullname = $_POST['fullname'];
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $mobile = $_POST['mobile'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$fullname, $username, $email, $mobile, $password]);
+        $sql = "INSERT INTO users_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$fullname, $username, $email, $mobile, $password]);
 
-    echo '<script>
+        echo '<script>
         // Show loading animation
         Swal.fire({
             title: "Loading...",
@@ -87,26 +111,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_user'])) {
             });
         }, 2000); // 3000 milliseconds (3 seconds) delay
       </script>';
-      exit;
-}
+        exit;
+    }
 
-// Handle user login
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_user'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    // Handle user login
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_user'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users_tb WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
+        $sql = "SELECT * FROM users_tb WHERE username = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['role'] = $user['role']; // Store the user's role in the session
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = $user['role']; // Store the user's role in the session
 
-        if ($_SESSION['role'] == 1) {
-            // Redirect admin to admin-home.php
-            echo '<script>
+            if ($_SESSION['role'] == 1) {
+                // Redirect admin to admin-home.php
+                echo '<script>
         // Show loading animation
         Swal.fire({
             title: "Loading...",
@@ -128,10 +152,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_user'])) {
             });
         }, 2000); // 3000 milliseconds (3 seconds) delay
       </script>';
-            exit;
-        } elseif ($_SESSION['role'] == 0) {
-            // Redirect regular users to user-home.php
-            echo '<script>
+                exit;
+            } elseif ($_SESSION['role'] == 0) {
+                // Redirect regular users to user-home.php
+                echo '<script>
         // Show loading animation
         Swal.fire({
             title: "Loading...",
@@ -154,9 +178,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_user'])) {
         }, 2000); // 3000 milliseconds (3 seconds) delay
       </script>';
 
-            exit;
+                exit;
+            } else {
+                // Handle unknown role
+                echo '<script>
+        // Show loading animation
+        Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Delay the actual popup
+        setTimeout(() => {
+            Swal.fire({
+                icon: "error",
+                title: "User Login Unsuccessful",
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function() {
+                window.location.href = "login.php";
+            });
+        }, 2000); // 3000 milliseconds (3 seconds) delay
+      </script>';
+                exit;
+            }
         } else {
-            // Handle unknown role
+            // User not found or password incorrect
             echo '<script>
         // Show loading animation
         Swal.fire({
@@ -181,51 +231,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_user'])) {
       </script>';
             exit;
         }
-    } else {
-        // User not found or password incorrect
-        echo '<script>
-        // Show loading animation
-        Swal.fire({
-            title: "Loading...",
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        // Delay the actual popup
-        setTimeout(() => {
-            Swal.fire({
-                icon: "error",
-                title: "User Login Unsuccessful",
-                showConfirmButton: false,
-                timer: 2000
-            }).then(function() {
-                window.location.href = "login.php";
-            });
-        }, 2000); // 3000 milliseconds (3 seconds) delay
-      </script>';
-        exit;
     }
-}
 
 
 
 
 
-// Handle landholder registration
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])) {
-    $fullname = $_POST['fullname'];
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $mobile = $_POST['mobile'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    // Handle landholder registration
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])) {
+        $fullname = $_POST['fullname'];
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $mobile = $_POST['mobile'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO landholders_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$fullname, $username, $email, $mobile, $password]);
+        $sql = "INSERT INTO landholders_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$fullname, $username, $email, $mobile, $password]);
 
-    echo '<script>
+        echo '<script>
         // Show loading animation
         Swal.fire({
             title: "Loading...",
@@ -247,23 +271,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
             });
         }, 2000); // 3000 milliseconds (3 seconds) delay
       </script>';
-      exit;
-}
+        exit;
+    }
 
-// Handle landholder login
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    // Handle landholder login
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
 
-    $sql = "SELECT * FROM landholders_tb WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$username]);
-    $landholder = $stmt->fetch();
+        $sql = "SELECT * FROM landholders_tb WHERE username = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$username]);
+        $landholder = $stmt->fetch();
 
-    if ($landholder && password_verify($password, $landholder['password'])) {
-        $_SESSION['landholder_id'] = $landholder['landholder_id'];
-        // Redirect admin to admin-home.php
-        echo '<script>
+        if ($landholder && password_verify($password, $landholder['password'])) {
+            $_SESSION['landholder_id'] = $landholder['landholder_id'];
+            // Redirect admin to admin-home.php
+            echo '<script>
         // Show loading animation
         Swal.fire({
             title: "Loading...",
@@ -285,10 +309,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
             });
         }, 2000); // 3000 milliseconds (3 seconds) delay
       </script>';
-      exit;
-    } else {
-        // Landholder not found or password incorrect
-        echo '<script>
+            exit;
+        } else {
+            // Landholder not found or password incorrect
+            echo '<script>
         // Show loading animation
         Swal.fire({
             title: "Loading...",
@@ -310,10 +334,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
             });
         }, 2000); // 3000 milliseconds (3 seconds) delay
       </script>';
-      exit;
+            exit;
+        }
     }
-}
-?>
+    ?>
 
     <!-- Logo and Text -->
     <a href="loading-page-in.php" id="logo-text">
@@ -362,7 +386,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
 
     <!-- User Registration Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <!-- Modal content here -->
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -372,26 +395,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="post" autocomplete="on" id="registrationForm">
+                    <form action="" method="post" autocomplete="on" id="userRegistrationForm" data-parsley-validate>
                         <div class="form-group">
-                            <label for="fullname">Full Name:</label>
-                            <input type="text" class="form-control" id="full_name" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required>
+                            <label for="full_name">Full Name: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="full_name" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z\s]+$" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan" required>
+                            <label for="username">Username: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan" required data-parsley-minlength="3" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required>
+                            <label for="email">Email: <span style="color: red;">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required data-parsley-type="email" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="mobile">Mobile:</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="e.g. 09887654321" required>
+                            <label for="mobile">Mobile: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="e.g. 09887654321" required data-parsley-pattern="^09\d{9}$" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="reg_password">Password:</label>
-                            <input type="password" class="form-control" id="reg_password" name="password" required>
+                            <label for="password">Password: <span style="color: red;">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" required data-parsley-minlength="8" data-parsley-special-char="true" data-parsley-trigger="change">
                         </div>
                         <button type="submit" name="register_user" class="btn btn-primary">Register</button>
                     </form>
@@ -400,11 +423,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
         </div>
     </div>
 
-    </div>
+    <script>
+        // Adding custom validator for special character
+        window.Parsley.addValidator('specialChar', {
+            validateString: function(value) {
+                const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+                return specialCharacters.test(value);
+            },
+            messages: {
+                en: 'Password must contain at least one special character.'
+            }
+        });
+    </script>
+
+
 
     <!-- Landholder Registration Modal -->
     <div class="modal fade" id="landholderModal" tabindex="-1" role="dialog" aria-labelledby="landholderModalLabel" aria-hidden="true">
-        <!-- Modal content here -->
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -414,35 +449,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="post" autocomplete="on">
+                    <form action="" method="post" autocomplete="on" id="landholderRegistrationForm" data-parsley-validate>
                         <div class="form-group">
-                            <label for="seller_fullname">Full Name:</label>
-                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="e.g. Juan Basilyo Delacruz">
+                            <label for="fullname">Full Name: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z\s]+$" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan">
+                            <label for="username">Username: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan" required data-parsley-minlength="3" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="seller_email">Email:</label>
-                            <input type="email" class="form-control" id="landholder_email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com">
+                            <label for="landholder_email">Email: <span style="color: red;">*</span></label>
+                            <input type="email" class="form-control" id="landholder_email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required data-parsley-type="email" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-                            <label for="seller_mobile">Mobile:</label>
-                            <input type="text" class="form-control" id="landholder_mobile" name="mobile" placeholder="e.g. 09887654321">
+                            <label for="landholder_mobile">Mobile: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="landholder_mobile" name="mobile" placeholder="e.g. 09887654321" required data-parsley-pattern="^09\d{9}$" data-parsley-trigger="change">
                         </div>
-                        <form id="registrationForm">
                         <div class="form-group">
-                            <label for="seller_password">Password:</label>
-                            <input type="password" class="form-control" id="landholder_password" name="password">
+                            <label for="landholder_password">Password: <span style="color: red;">*</span></label>
+                            <input type="password" class="form-control" id="landholder_password" name="password" required data-parsley-minlength="8" data-parsley-special-char="true" data-parsley-trigger="change">
                         </div>
                         <button type="submit" name="register_landholder" class="btn btn-primary">Register</button>
-                        </form>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+    <script>
+        // Adding custom validator for special character
+        window.Parsley.addValidator('specialChar', {
+            validateString: function(value) {
+                const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+                return specialCharacters.test(value);
+            },
+            messages: {
+                en: 'Password must contain at least one special character.'
+            }
+        });
+    </script>
+
+
+
+
+
+
 
     <!-- Landholder Login Modal -->
     <div class="modal fade" id="landholderLoginModal" tabindex="-1" role="dialog" aria-labelledby="landholderLoginModalLabel" aria-hidden="true">
@@ -464,13 +517,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
                         <div class="form-group">
                             <label for="landholder_password">Password:</label>
                             <div class="input-group">
-                            <input type="password" class="form-control" id="landholder_password" name="password">
-                            <div class="input-group-append" data-dismiss="modal">
-                                <span class="input-group-text cursor-pointer" onclick="togglePassword('password')">
-                                    <i class="fas fa-eye" id="eye"></i>
-                                </span>
+                                <input type="password" class="form-control" id="landholder_password" name="password">
+                                <div class="input-group-append" data-dismiss="modal">
+                                    <span class="input-group-text cursor-pointer" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye" id="eye"></i>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
                         </div>
                         <button type="submit" name="login_landholder" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</button>
                     </form>
@@ -479,98 +532,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
         </div>
     </div>
 
+
+    <script>
+        $(document).ready(function() {
+            $('#userRegistrationForm').parsley();
+            $('#landholderRegistrationForm').parsley();
+        });
+    </script>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
 
             fetch('login.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = data.redirect;
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = data.redirect;
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+        });
+
+        function togglePassword(id) {
+            var x = document.getElementById(id);
+            var eye = x.nextElementSibling.querySelector('i');
+            if (x.type === "password") {
+                x.type = "text";
+                eye.classList.add("fa-eye-slash");
+            } else {
+                x.type = "password";
+                eye.classList.remove("fa-eye-slash");
+            }
+            event.stopPropagation(); // Add this line
+        }
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('registrationForm').addEventListener('submit', function(event) {
+                const password = document.getElementById('reg_password').value;
+                if (password.length < 8) {
+                    alert('Password must be at least 8 characters long.');
+                    event.preventDefault(); // Prevent form submission
+                } else if (!containsSpecialCharacter(password)) {
+                    alert('Password must contain at least one special character.');
+                    event.preventDefault(); // Prevent form submission
                 }
             });
         });
-        
-        function togglePassword(id) {
-  var x = document.getElementById(id);
-  var eye = x.nextElementSibling.querySelector('i');
-  if (x.type === "password") {
-    x.type = "text";
-    eye.classList.add("fa-eye-slash");
-  } else {
-    x.type = "password";
-    eye.classList.remove("fa-eye-slash");
-  }
-  event.stopPropagation(); // Add this line
-}
 
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('form').addEventListener('submit', function(event) {
-        const password = document.getElementById('password').value;
-        if (password.length < 8) {
-            alert('Password must be at least 8 characters long.');
-            event.preventDefault(); // Prevent form submission
-        } else if (!containsSpecialCharacter(password)) {
-            alert('Password must contain at least one special character.');
-            event.preventDefault(); // Prevent form submission
+        function containsSpecialCharacter(password) {
+            const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+            return specialCharacters.test(password);
         }
-    });
-});
-
-function containsSpecialCharacter(password) {
-    const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-    return specialCharacters.test(password);
-}
-
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('registrationForm').addEventListener('submit', function(event) {
-        const password = document.getElementById('reg_password').value;
-        if (password.length < 8) {
-            alert('Password must be at least 8 characters long.');
-            event.preventDefault(); // Prevent form submission
-        } else if (!containsSpecialCharacter(password)) {
-            alert('Password must contain at least one special character.');
-            event.preventDefault(); // Prevent form submission
-        }
-    });
-});
 
-function containsSpecialCharacter(password) {
-    const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-    return specialCharacters.test(password);
-}
-
-    </script>
 
 
 </body>
 
 </html>
-
