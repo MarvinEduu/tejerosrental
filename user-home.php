@@ -247,7 +247,7 @@ session_start();
         effect: "slide",
         breakpoints: {
           550: {
-            slidesPerView: 2,
+            slidesPerView: 1,
           },
           768: {
             slidesPerView: 2,
