@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $email = $_POST['email'];
 
     // Check if email exists in users_tb
-    $sql = "SELECT * FROM users_tb WHERE email = :email";
+    $sql = "SELECT * FROM landholders_tb WHERE email = :email";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':email', $email);
     $stmt->execute();

@@ -20,9 +20,6 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
-
-
-
     <style>
         /* Custom CSS for logo and text */
         #logo-text {
@@ -71,7 +68,6 @@ session_start();
             /* Adjust based on your content */
         }
     </style>
-
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center h-screen" style="background-color: var(--secondary-color);">
@@ -233,10 +229,6 @@ session_start();
         }
     }
 
-
-
-
-
     // Handle landholder registration
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])) {
         $fullname = $_POST['fullname'];
@@ -396,10 +388,10 @@ session_start();
                 </div>
                 <div class="modal-body">
                     <form action="" method="post" autocomplete="on" id="userRegistrationForm" data-parsley-validate>
-                        <div class="form-group">
-                            <label for="full_name">Full Name: <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="full_name" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z\s]+$" data-parsley-trigger="change">
-                        </div>
+                    <div class="form-group">
+                        <label for="full_name">Full Name: <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="full_name" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z]+(\s+[a-zA-Z]+)+$" data-parsley-pattern-message="Please enter your full name, including both first name and surname." data-parsley-trigger="change">
+                    </div>
                         <div class="form-group">
                             <label for="username">Username: <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan" required data-parsley-minlength="3" data-parsley-trigger="change">
@@ -452,8 +444,8 @@ session_start();
                     <form action="" method="post" autocomplete="on" id="landholderRegistrationForm" data-parsley-validate>
                         <div class="form-group">
                             <label for="fullname">Full Name: <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z\s]+$" data-parsley-trigger="change">
-                        </div>
+                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z]+(\s+[a-zA-Z]+)+$" data-parsley-pattern-message="Please enter your full name, including both first name and surname." data-parsley-trigger="change">
+                    </div>
                         <div class="form-group">
                             <label for="username">Username: <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan" required data-parsley-minlength="3" data-parsley-trigger="change">
@@ -493,10 +485,6 @@ session_start();
 
 
 
-
-
-
-
     <!-- Landholder Login Modal -->
     <div class="modal fade" id="landholderLoginModal" tabindex="-1" role="dialog" aria-labelledby="landholderLoginModalLabel" aria-hidden="true">
         <!-- Modal content here -->
@@ -525,7 +513,10 @@ session_start();
                                 </div>
                             </div>
                         </div>
+                        <div class="flex justify-between items-center">
                         <button type="submit" name="login_landholder" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</button>
+                        <a href="landholder-forgot-password/forgot_password.php" class="text-sm text-blue-500 hover:text-blue-700">Forgot Password?</a>
+                    </div>
                     </form>
                 </div>
             </div>

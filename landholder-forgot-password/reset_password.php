@@ -72,7 +72,7 @@ if (strlen($password) < 8 || !preg_match('/^(?=.*[a-zA-Z])(?=.*[\d!@#$%^&*()_+{}
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             // Update the user's password in the database
-            $sql = "UPDATE users_tb SET password = :password WHERE email = :email";
+            $sql = "UPDATE landholders_tb SET password = :password WHERE email = :email";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':password', $hashed_password);
             $stmt->bindParam(':email', $email);
