@@ -20,17 +20,7 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
-    <link rel="stylesheet" href="css/style2.css">
     <style>
-        body {
-            background-image: url('images/blob.svg'); /* Add your background image here */
-            background-size: cover;
-            background-position: center;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
         /* Custom CSS for logo and text */
         #logo-text {
             position: absolute;
@@ -90,62 +80,35 @@ session_start();
         $email = $_POST['email'];
         $mobile = $_POST['mobile'];
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    
-        // Check if email already exists in the database
-        $sql = "SELECT * FROM users_tb WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$email]);
-        $existing_user = $stmt->fetch();
-    
-        if ($existing_user) {
-            // Email already exists, display error message
-            echo '<script>
-                // Show error message using SweetAlert
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Email already exists. Please use a different email address.",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "OK"
-                }).then(function() {
-                    // Redirect user to login.php
-                    window.location.href = "login.php";
-                });
-            </script>';
-            exit;
-        } else {
-            // Email doesn't exist, proceed with registration
-            $sql = "INSERT INTO users_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$fullname, $username, $email, $mobile, $password]);
-    
-            echo '<script>
-                // Show loading animation
-                Swal.fire({
-                    title: "Loading...",
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-    
-                // Delay the actual popup
-                setTimeout(() => {
-                    Swal.fire({
-                        icon: "success",
-                        title: "User Registration Done",
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(function() {
-                        window.location.href = "login.php";
-                    });
-                }, 2000); // 3000 milliseconds (3 seconds) delay
-            </script>';
-            exit;
-        }
-    }
-    
 
+        $sql = "INSERT INTO users_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$fullname, $username, $email, $mobile, $password]);
+
+        echo '<script>
+        // Show loading animation
+        Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Delay the actual popup
+        setTimeout(() => {
+            Swal.fire({
+                icon: "success",
+                title: "User Registration Done",
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function() {
+                window.location.href = "login.php";
+            });
+        }, 2000); // 3000 milliseconds (3 seconds) delay
+      </script>';
+        exit;
+    }
 
     // Handle user login
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_user'])) {
@@ -266,68 +229,42 @@ session_start();
         }
     }
 
-// Handle landholder registration
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])) {
-    $fullname = $_POST['fullname'];
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $mobile = $_POST['mobile'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    // Handle landholder registration
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])) {
+        $fullname = $_POST['fullname'];
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $mobile = $_POST['mobile'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Check if email already exists in the database
-    $sql = "SELECT * FROM landholders_tb WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$email]);
-    $existing_landholder = $stmt->fetch();
-
-    if ($existing_landholder) {
-        // Email already exists, display error message
-        echo '<script>
-                // Show error message using SweetAlert
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Email already exists. Please use a different email address.",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "OK"
-                }).then(function() {
-                    // Redirect user to login.php
-                    window.location.href = "login.php";
-                });
-            </script>';
-            exit;
-    } else {
-        // Email doesn't exist, proceed with registration
         $sql = "INSERT INTO landholders_tb (full_name, username, email, mobile, password) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$fullname, $username, $email, $mobile, $password]);
 
         echo '<script>
-            // Show loading animation
-            Swal.fire({
-                title: "Loading...",
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+        // Show loading animation
+        Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
-            // Delay the actual popup
-            setTimeout(() => {
-                Swal.fire({
-                    icon: "success",
-                    title: "User Registration Done",
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(function() {
-                    window.location.href = "login.php";
-                });
-            }, 2000); // 3000 milliseconds (3 seconds) delay
-        </script>';
+        // Delay the actual popup
+        setTimeout(() => {
+            Swal.fire({
+                icon: "success",
+                title: "User Registration Done",
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function() {
+                window.location.href = "login.php";
+            });
+        }, 2000); // 3000 milliseconds (3 seconds) delay
+      </script>';
         exit;
     }
-}
-
 
     // Handle landholder login
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_landholder'])) {
@@ -399,9 +336,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
         <!-- Logo -->
         <img src="images/logoer.png" alt="Logo">
         <!-- Text -->
-        <h1 class="text-lg font-bold text-gray-700">Tejeros Rental</h1>
+        <h1 class="text-lg font-bold">Tejero Rentals</h1>
     </a>
-    <div class="container max-w-4xl mx-auto p-8 rounded-lg shadow-lg" style="background-color: var(--white-color);">
+    <div class="container max-w-4xl mx-auto p-8 rounded-lg shadow-lg" style="background-color: var(--white-color); color: var(--dark-color)">
         <div class="grid grid-cols-2 gap-4">
             <!-- User Login and Registration -->
             <div class=" border-r-2 p-8">
@@ -451,8 +388,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
                 </div>
                 <div class="modal-body">
                     <form action="" method="post" autocomplete="on" id="userRegistrationForm" data-parsley-validate>
-                        <input type="hidden" name="email_check" id="email_check" value="false">
-
                         <div class="form-group">
                             <label for="full_name">Full Name: <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="full_name" name="fullname" placeholder="e.g. Juan Basilyo Delacruz" required data-parsley-pattern="^[a-zA-Z]+(\s+[a-zA-Z]+)+$" data-parsley-pattern-message="Please enter your full name, including both first name and surname." data-parsley-trigger="change">
@@ -463,7 +398,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
                         </div>
                         <div class="form-group">
                             <label for="email">Email: <span style="color: red;">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required data-parsley-type="email" data-parsley-remote="usercheck-email.php" data-parsley-trigger="change">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required data-parsley-type="email" data-parsley-trigger="change">
+                        </div>
+                        <div class="form-group">
+                            <label for="otp">OTP: <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP received in email" required>
                         </div>
                         <div class="form-group">
                             <label for="mobile">Mobile: <span style="color: red;">*</span></label>
@@ -491,8 +430,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
                 en: 'Password must contain at least one special character.'
             }
         });
-
-        
     </script>
 
 
@@ -518,9 +455,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
                             <input type="text" class="form-control" id="username" name="username" placeholder="e.g. Don Juan" required data-parsley-minlength="3" data-parsley-trigger="change">
                         </div>
                         <div class="form-group">
-            <label for="landholder_email">Email: <span style="color: red;">*</span></label>
-            <input type="email" class="form-control" id="landholder_email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required data-parsley-type="email" data-parsley-remote="landholdercheck-email.php" data-parsley-trigger="change">
-        </div>
+                            <label for="landholder_email">Email: <span style="color: red;">*</span></label>
+                            <input type="email" class="form-control" id="landholder_email" name="email" placeholder="e.g. Juan.Delacruz@gmail.com" required data-parsley-type="email" data-parsley-trigger="change">
+                        </div>
 
                         <div class="form-group">
                             <label for="landholder_mobile">Mobile: <span style="color: red;">*</span></label>

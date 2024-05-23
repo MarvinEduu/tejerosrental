@@ -5,8 +5,6 @@ session_start();
 
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en" data-theme="winter">
 
@@ -23,18 +21,12 @@ session_start();
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://unpkg.com/tippy.js@6.3.2/dist/tippy-bundle.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://unpkg.com/tippy.js@6.3.2/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body>
 
-    
-
-    <?php
-    
-
+<?php
 // Ensure property ID is passed via URL
 if (!isset($_GET['pid'])) {
     // Redirect or handle error if property ID is missing
@@ -105,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_booking'])) {
                 window.location.href = "own-booking.php";
             });
           </script>';
-        exit;
+          exit;
         }
 
         // Insert booking into database
@@ -124,111 +116,127 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_booking'])) {
 ?>
 <?php include 'user/user-header.php'; ?>
 
-    <div class="container mx-auto p-6 flex flex-col lg:flex-row">
-        <div class="lg:w-1/2 lg:pr-8">
-            <form method="post" action="">
-                <h1 class="text-3xl font-bold mb-6">Book Property - <?= htmlspecialchars($property['name']); ?></h1>
-                <div class="mb-4">
-                    <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date:</label>
-                    <input type="date" id="start_date" name="start_date" required
-                        class="mt-1 px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-
-                <div class="mb-4">
-                    <label for="months" class="block text-sm font-medium text-gray-700">Duration (in months):</label>
-                    <input type="number" id="months" name="months" min="1" required
-                        class="mt-1 px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-
-                <div class="mb-4">
-                    <label for="end_date" class="block text-sm font-medium text-gray-700">End Date:</label>
-                    <input type="text" id="end_date" name="end_date" readonly
-                        class="mt-1 px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-
-                <div class="mb-4">
-                    <label for="total_rent" class="block text-sm font-medium text-gray-700">Total Rent:</label>
-                    <input type="text" id="total_rent" name="total_rent" readonly
-                        class="mt-1 px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-
-                <div class="mb-4">
-                    <input type="checkbox" id="agree" name="agree" class="mr-2" required>
-                    <label for="agree" class="text-sm font-medium text-gray-700">
-                        I hereby follow and understand the policies and rules of the property. I acknowledge that breaking these rules has consequences.
-                    </label>
-                </div>
-
-                <!-- Submit button -->
-                <button type="submit" name="confirm_booking" id="confirm_booking_button"
-                    class="inline-block px-6 py-3 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" disabled>
-                    Confirm Booking
-                </button>
-            </form>
-        </div>
-        <div class="lg:w-1/2 lg:pl-8">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <img src="uploaded_image/<?= htmlspecialchars($property['image01']); ?>" alt="<?= htmlspecialchars($property['name']); ?>" class="w-full h-64 object-cover mb-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-2"><?= htmlspecialchars($property['name']); ?></h2>
-                <p class="text-gray-700 mb-4"><strong>Address:</strong> <?= htmlspecialchars($property['address']); ?></p>
-                <p class="text-gray-700 mb-4"><strong>Type:</strong> <?= htmlspecialchars($property['houseType']); ?></p>
-                <p class="text-gray-700 mb-4"><strong>Size:</strong> <?= htmlspecialchars($property['size']); ?> sq ft</p>
-                <p class="text-gray-700 mb-4"><strong>Bedrooms:</strong> <?= htmlspecialchars($property['bedroomNum']); ?></p>
-                <p class="text-gray-700 mb-4"><strong>Bathrooms:</strong> <?= htmlspecialchars($property['bathroomNum']); ?></p>
-                <p class="text-gray-700 mb-4"><strong>Property Owner:</strong> <?= htmlspecialchars($property['propertyOwner']); ?></p>
+<div class="container mx-auto p-6 flex flex-col lg:flex-row">
+    <div class="lg:w-1/2 lg:pr-8">
+        <form method="post" action="">
+            <h1 class="text-3xl font-bold mb-6">Book Property - <?= htmlspecialchars($property['name']); ?></h1>
+            <div class="mb-4">
+                <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required
+                    class="mt-1 px-4 py-4 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
+
+            <div class="mb-4">
+                <label for="months" class="block text-sm font-medium text-gray-700">Duration (in months):</label>
+                <input type="number" id="months" name="months" min="1" required
+                    class="mt-1 px-4 py-4 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="end_date" class="block text-sm font-medium text-gray-700">End Date:</label>
+                <input type="text" id="end_date" name="end_date" readonly
+                    class="mt-1 px-4 py-4 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="total_rent" class="block text-sm font-medium text-gray-700">Total Rent:</label>
+                <input type="text" id="total_rent" name="total_rent" readonly
+                    class="mt-1 px-4 py-4 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div class="mb-4">
+                <input type="checkbox" id="agree" name="agree" class="mr-2" required>
+                <label for="agree" class="text-sm font-medium text-gray-700">
+                    I hereby follow and understand the policies and rules of the property. I acknowledge that breaking these rules has consequences.
+                </label>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" name="confirm_booking" id="confirm_booking_button"
+                class="inline-block px-6 py-3 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" disabled>
+                Confirm Booking
+            </button>
+            <!-- Go Back button -->
+            <button type="button" id="go_back_button"
+                class="inline-block px-6 py-3 text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                Go Back
+            </button>
+        </form>
+    </div>
+    <div class="lg:w-1/2 lg:pl-8">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <img src="uploaded_image/<?= htmlspecialchars($property['image01']); ?>" alt="<?= htmlspecialchars($property['name']); ?>" class="w-full h-64 object-cover mb-6 rounded-lg">
+            <h2 class="text-2xl font-bold mb-2"><?= htmlspecialchars($property['name']); ?></h2>
+            <p class="text-gray-700 mb-4"><strong>Address:</strong> <?= htmlspecialchars($property['address']); ?></p>
+            <p class="text-gray-700 mb-4"><strong>Type:</strong> <?= htmlspecialchars($property['houseType']); ?></p>
+            <p class="text-gray-700 mb-4"><strong>Size:</strong> <?= htmlspecialchars($property['size']); ?> sq ft</p>
+            <p class="text-gray-700 mb-4"><strong>Bedrooms:</strong> <?= htmlspecialchars($property['bedroomNum']); ?></p>
+            <p class="text-gray-700 mb-4"><strong>Bathrooms:</strong> <?= htmlspecialchars($property['bathroomNum']); ?></p>
+            <p class="text-gray-700 mb-4"><strong>Property Owner:</strong> <?= htmlspecialchars($property['propertyOwner']); ?></p>
         </div>
     </div>
+</div>
 
-    
-
-    <script>
-        // Function to calculate end date and total rent
-        function calculateEndDateAndRent() {
-            const startDateInput = document.getElementById('start_date');
-            const monthsInput = document.getElementById('months');
-            const endDateInput = document.getElementById('end_date');
-            const totalRentInput = document.getElementById('total_rent');
-
-            if (startDateInput.value && monthsInput.value) {
-                const startDate = new Date(startDateInput.value);
-                const months = parseInt(monthsInput.value);
-
-                // Calculate end date
-                const endDate = new Date(startDate);
-                endDate.setMonth(startDate.getMonth() + months);
-                endDateInput.value = endDate.toISOString().split('T')[0];
-
-                // Calculate total rent (assuming a fixed rent per month, adjust as needed)
-                const totalRent = months * <?= $property['rentAmount']; ?>;
-                totalRentInput.value = totalRent.toFixed(2);
-            } else {
-                endDateInput.value = '';
-                totalRentInput.value = '';
-            }
-        }
-
-        // Event listeners to update on input change
+<script>
+    // Function to calculate end date and total rent
+    function calculateEndDateAndRent() {
         const startDateInput = document.getElementById('start_date');
         const monthsInput = document.getElementById('months');
-        const agreeCheckbox = document.getElementById('agree');
-        const confirmBookingButton = document.getElementById('confirm_booking_button');
+        const endDateInput = document.getElementById('end_date');
+        const totalRentInput = document.getElementById('total_rent');
 
-        startDateInput.addEventListener('input', calculateEndDateAndRent);
-        monthsInput.addEventListener('input', calculateEndDateAndRent);
+        if (startDateInput.value && monthsInput.value) {
+            const startDate = new Date(startDateInput.value);
+            const months = parseInt(monthsInput.value);
 
-        // Enable or disable the confirm booking button based on the checkbox state
-        agreeCheckbox.addEventListener('change', function() {
-            confirmBookingButton.disabled = !this.checked;
-        });
+            // Calculate end date
+            const endDate = new Date(startDate);
+            endDate.setMonth(startDate.getMonth() + months);
+            endDateInput.value = endDate.toISOString().split('T')[0];
 
-        // Initial calculation on page load (if values are pre-filled)
-        calculateEndDateAndRent();
-    </script>
+            // Calculate total rent (assuming a fixed rent per month, adjust as needed)
+            const totalRent = months * <?= $property['rentAmount']; ?>;
+            totalRentInput.value = formatCurrency(totalRent);
+        } else {
+            endDateInput.value = '';
+            totalRentInput.value = '';
+        }
+    }
 
-    <?php include 'user/user-footer.php'; ?>
+    // Function to format a number as currency (PHP peso in this case)
+    function formatCurrency(amount) {
+        return "₱ " + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
+    // Event listeners to update on input change
+    const startDateInput = document.getElementById('start_date');
+    const monthsInput = document.getElementById('months');
+    const agreeCheckbox = document.getElementById('agree');
+    const confirmBookingButton = document.getElementById('confirm_booking_button');
+    const goBackButton = document.getElementById('go_back_button');
+
+    startDateInput.addEventListener('input', calculateEndDateAndRent);
+    monthsInput.addEventListener('input', calculateEndDateAndRent);
+
+    // Enable or disable the confirm booking button based on the checkbox state
+    agreeCheckbox.addEventListener('change', function() {
+        confirmBookingButton.disabled = !this.checked;
+    });
+
+    // Handle Go Back button click
+    goBackButton.addEventListener('click', function() {
+        window.history.back();
+    });
+
+    // Initial calculation on page load (if values are pre-filled)
+    calculateEndDateAndRent();
+
+    // Ensure start date is not a past date
+    startDateInput.min = new Date().toISOString().split('T')[0];
+</script>
+
+<?php include 'user/user-footer.php'; ?>
 
 </body>
 
 </html>
-
