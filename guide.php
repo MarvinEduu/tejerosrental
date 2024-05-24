@@ -43,7 +43,7 @@ session_start();
     </div>
     <!-- Add an image or additional content in the second column if needed -->
      <div class="lg:w-1/2 lg:pl-8">
-     <img src="images/image.png" alt="Tejeros Rental Logo" class="mr-2 w-full ">
+     <img src="images/cavite.jpg" alt="Tejeros Rental Logo" class="mr-2 w-full h-full rounded-md ">
     </div>
   </div>
 

@@ -204,7 +204,7 @@ WHERE lh.landholder_id = ?
                                     <input type="hidden" name="propertyId" value="<?= $property['propertyId'] ?>"> <!-- Replace with dynamic property ID -->
                                     <div class="mb-4">
                                         <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Reporting</label>
-                                        <textarea id="reason" name="reason" rows="3" class="form-textarea mt-1 block w-full" required></textarea>
+                                        <textarea id="reason" name="reason" rows="3" class="form-textarea mt-1 block w-full border border-gray-500 rounded-md" required></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-red w-full">Submit Report</button>
                                 </form>

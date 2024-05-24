@@ -208,14 +208,20 @@ $total_properties = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
 <body class="bg-white">
     <?php include 'user/user-header.php' ?>
 
-    <div class="flex justify-center items-center mx-10 mt-2 py-4 mb-2 px-8 shadow-md">
-        <div class="join">
-            <form action="" method="GET" class="w-96 flex">
-                <input type="text" name="search" class="input input-bordered join-item w-full" placeholder="Search by name" />
-                <button type="submit" class="btn join-item">Search</button>
-            </form>
-        </div>
+    <div class="flex justify-center items-center mx-4 sm:mx-10 mt-2 py-4 mb-2 px-4 sm:px-8 shadow-md">
+    <div class="w-full sm:w-auto">
+        <form action="" method="GET" class="flex flex-wrap justify-center">
+            <input type="text" name="search" class="input input-bordered w-full sm:w-64 md:w-80 lg:w-96 mb-2 sm:mb-0 sm:mr-2" placeholder="Search by name" />
+            <button type="submit" class="btn w-full sm:w-auto">Search</button>
+        </form>
     </div>
+</div>
+<nav class="breadcrumbs flex items-center ml-11">
+        <a href="loading-page-in.php" class="text-gray-500 hover:text-gray-700 transition-colors">Home</a>
+        <span class="mx-2 text-gray-500">></span>
+        <a href="properties.php" class="text-black-500 hover:text-gray-700 transition-colors">Properties</a>
+    </nav>
+
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mx-10 justify-between">
         <a href="category.php?category=house" class="bg-blue-200 hover:bg-blue-300 rounded-lg p-4 flex flex-col items-center justify-center">
@@ -236,14 +242,10 @@ $total_properties = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
         </a>
     </div>
 
-    <nav class="breadcrumbs flex items-center ml-11">
-        <a href="loading-page-in.php" class="text-gray-500 hover:text-gray-700 transition-colors">Home</a>
-        <span class="mx-2 text-gray-500">></span>
-        <a href="properties.php" class="text-black-500 hover:text-gray-700 transition-colors">Properties</a>
-    </nav>
 
     <div class="container mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start mx-6">
+            
             <!-- Filter Section -->
             <!-- Filter Section -->
             <div class="filter-section py-4 px-6 mt-6 border border-gray-300 bg-blue-100 rounded-md md:w-1/4 mr-4">
@@ -306,7 +308,7 @@ $total_properties = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
             <!-- Properties Listing Section -->
             <div class="property-listing flex-grow mt-6 ">
-                <div class="flex justify-between items-center mb-4 mx-4 border border-gray-300 py-4 px-2">
+                <div class="flex justify-between items-center mb-4 ml-4 border border-gray-300 py-4 px-2">
                     <p class="text-gray-600">Showing <?php echo min($total_properties, $offset + 1); ?> - <?php echo min($total_properties, $offset + $itemsPerPage); ?> out of <?php echo $total_properties; ?> results</p>
                     <form action="" method="GET" class="flex justify-end">
                         <select name="sort" class="select select-bordered w-full max-w-xs" onchange="this.form.submit()">
@@ -320,7 +322,7 @@ $total_properties = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
                 </div>
                 <div class="property-listing flex-grow mt-6">
                     <!-- Property Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mt-4 ml-4 mr-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mt-4 ml-4">
                         <?php
                         // Check if there are any matching properties
                         if ($select_products->rowCount() > 0) {

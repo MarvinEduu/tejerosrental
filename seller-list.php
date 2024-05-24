@@ -4,7 +4,7 @@
 session_start();
 
 // Number of items per page
-$itemsPerPage = 6;
+$itemsPerPage = 8;
 
 // Get the current page number
 $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -40,7 +40,6 @@ $sql .= $searchQuery;
 
 // Group by clause
 $sql .= " GROUP BY s.landholder_id";
-
 
 // Sort by
 if (isset($_GET['sort'])) {
@@ -101,8 +100,6 @@ if (!empty($searchQuery)) {
 $total_sellers = $total_sellers_query->fetch(PDO::FETCH_ASSOC)['total'];
 ?>
 
-
-
 <!DOCTYPE html>
 <html data-theme="winter">
 
@@ -158,22 +155,19 @@ $total_sellers = $total_sellers_query->fetch(PDO::FETCH_ASSOC)['total'];
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
-<body>
+<body class="bg-white">
     <?php include 'user/user-header.php' ?>
 
-
-    <div class="flex justify-center items-center mx-10 mt-2 py-6 mb-4 px-8 shadow-md">
-        <div class="join">
-            <form action="" method="GET" class="w-96 flex">
-                <input type="text" name="search" class="input input-bordered join-item w-full" placeholder="Search by name" />
-                <button type="submit" class="btn join-item">Search</button>
+    <div class="flex justify-center items-center mx-4 sm:mx-10 mt-2 py-4 mb-2 px-4 sm:px-8 shadow-md">
+        <div class="w-full sm:w-auto">
+            <form action="" method="GET" class="flex flex-wrap justify-center">
+                <input type="text" name="search" class="input input-bordered w-full sm:w-64 md:w-80 lg:w-96 mb-2 sm:mb-0 sm:mr-2" placeholder="Search by name" />
+                <button type="submit" class="btn w-full sm:w-auto">Search</button>
             </form>
         </div>
+
     </div>
-
-
-    <div class="mx-4 mt-4 shadow-md rounded-lg bg-white p-4 mx-8">
-    <nav class="breadcrumbs mb-2">
+    <nav class="breadcrumbs ml-10">
         <!-- Home -->
         <a href="loading-page-in.php" class="text-gray-500 hover:text-gray-700 transition-colors">
             Home
@@ -185,27 +179,28 @@ $total_sellers = $total_sellers_query->fetch(PDO::FETCH_ASSOC)['total'];
         </a>
     </nav>
 
-    <div class="flex flex-col md:flex-row md:items-center justify-between">
-        <div class="mb-2">
-            Showing <?php echo min($total_sellers, $offset + 1); ?> - <?php echo min($total_sellers, $offset + $itemsPerPage); ?> out of <?php echo $total_sellers; ?> sellers
+    <div class=" rounded-lg bg-white p-4 mx-10 border border-gray-300">
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between">
+            <div class="mb-2 ">
+                Showing <?php echo min($total_sellers, $offset + 1); ?> - <?php echo min($total_sellers, $offset + $itemsPerPage); ?> out of <?php echo $total_sellers; ?> sellers
+            </div>
+
+            <form action="" method="GET" class="flex flex-col md:flex-row md:items-center">
+                <label for="sort" class="mr-2 md:mr-4 whitespace-nowrap mb-2 md:mb-0">Sort by:</label>
+                <select id="sort" name="sort" class="select select-bordered max-w-xs">
+                    <option value="default">Default</option>
+                    <option value="newest_seller" <?php if (isset($_GET['sort']) && $_GET['sort'] == 'newest_seller') echo 'selected'; ?>>Newest Seller</option>
+                    <option value="oldest_seller" <?php if (isset($_GET['sort']) && $_GET['sort'] == 'oldest_seller') echo 'selected'; ?>>Oldest Seller</option>
+                    <option value="name_asc" <?php if (isset($_GET['sort']) && $_GET['sort'] == 'name_asc') echo 'selected'; ?>>Name (Ascending)</option>
+                </select>
+            </form>
         </div>
-
-        <form action="" method="GET" class="flex flex-col md:flex-row md:items-center">
-            <label for="sort" class="mr-2 md:mr-4 whitespace-nowrap mb-2 md:mb-0">Sort by:</label>
-            <select id="sort" name="sort" class="select select-bordered max-w-xs">
-                <option value="default">Default</option>
-                <option value="newest_seller" <?php if (isset($_GET['sort']) && $_GET['sort'] == 'newest_seller') echo 'selected'; ?>>Newest Seller</option>
-                <option value="oldest_seller" <?php if (isset($_GET['sort']) && $_GET['sort'] == 'oldest_seller') echo 'selected'; ?>>Oldest Seller</option>
-                <option value="name_asc" <?php if (isset($_GET['sort']) && $_GET['sort'] == 'name_asc') echo 'selected'; ?>>Name (Ascending)</option>
-            </select>
-        </form>
     </div>
-</div>
-
 
     <div class="container mx-auto p-6 w-4/4">
         <!-- Updated HTML structure -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <?php
             // Check if there are any sellers
             if ($select_sellers->rowCount() > 0) {
@@ -259,7 +254,6 @@ $total_sellers = $total_sellers_query->fetch(PDO::FETCH_ASSOC)['total'];
 
     <?php include 'user/user-footer.php' ?>
 </body>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var sortSelect = document.getElementById('sort');
@@ -271,10 +265,5 @@ $total_sellers = $total_sellers_query->fetch(PDO::FETCH_ASSOC)['total'];
         }
     });
 </script>
-
-
-
-
-
 
 </html>
