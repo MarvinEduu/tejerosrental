@@ -58,9 +58,10 @@ try {
     <h1 class="text-3xl text-center my-8">Your Current Bookings</h1>
 
     <?php if (empty($bookings)): ?>
-        <div class="text-center text-gray-700 h-auto">
+        <div class="text-center text-gray-700">
             <p>You are not booked in any properties yet.</p>
             <a href="properties.php" class="text-indigo-600 hover:underline">Browse properties</a>
+            <img src="images/empty1.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 500px;">
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -69,8 +70,8 @@ try {
                     <img src="uploaded_image/<?= htmlspecialchars($booking['image01']); ?>" alt="<?= htmlspecialchars($booking['propertyName']); ?>" class="w-full h-64 object-cover mb-6 rounded-lg">
                     <h2 class="text-2xl font-bold mb-2"><?= htmlspecialchars($booking['propertyName']); ?></h2>
                     <p class="text-gray-700 mb-4 text-justify"><?= htmlspecialchars($booking['details']); ?></p>
-                    <p class="text-gray-700 mb-4"><strong>Start Date:</strong> <?= htmlspecialchars($booking['startDate']); ?></p>
-                    <p class="text-gray-700 mb-4"><strong>End Date:</strong> <?= htmlspecialchars($booking['endDate']); ?></p>
+                    <p class="text-gray-700 mb-4"><strong>Start Date:</strong> <?= date('F j, Y', strtotime($booking['startDate'])); ?></p>
+                    <p class="text-gray-700 mb-4"><strong>End Date:</strong> <?= date('F j, Y', strtotime($booking['endDate'])); ?></p>
                     <p class="text-gray-700 mb-4"><strong>Duration:</strong> <?= htmlspecialchars($booking['months']); ?> months</p>
                     <p class="text-gray-700 mb-4"><strong>Total Rent: </strong> ₱ <?= number_format($booking['totalRent']); ?></p>
 

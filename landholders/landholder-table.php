@@ -119,14 +119,14 @@ $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="container mx-auto p-6 overflow-y-auto">
-        <div class="bg-blue-100 shadow overflow-hidden sm:rounded-lg p-6">
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
             <!-- Display properties -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
                 <?php foreach ($properties as $property) : ?>
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden  border border-gray-400">
                         <div class="flex flex-col sm:flex-row">
                             <!-- Display property image -->
-                            <img src="../uploaded_image/<?php echo htmlspecialchars($property['image01']); ?>" alt="Property Image" class="w-full sm:w-80 h-80 object-cover rounded-lg p-3">
+                            <img src="../uploaded_image/<?php echo htmlspecialchars($property['image01']); ?>" alt="Property Image" class="w-full sm:w-80 h-80 object-cover p-3">
                             <div class="p-4 flex flex-col justify-between">
                                 <h4 class="text-lg font-semibold"><?= htmlspecialchars($property['name']); ?></h4>
                                 <p class="text-md text-gray-500"><i class="fas fa-home"></i> <span class="font-bold">Type:</span> <?= htmlspecialchars($property['houseType']); ?></p>

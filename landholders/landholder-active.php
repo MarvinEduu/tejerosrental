@@ -12,17 +12,20 @@ if (!isset($_SESSION['landholder_id'])) {
 
 $landholderId = $_SESSION['landholder_id'];
 
+// Define the default status to show accepted bookings
+$status = isset($_GET['status']) && $_GET['status'] === 'cancelled' ? 'Cancelled' : 'Accepted';
+
 try {
-    // Fetch bookings for the landholder's properties, including both accepted and cancelled
+    // Fetch bookings for the landholder's properties based on the selected status
     $query = "
         SELECT b.*, p.name AS property_name, p.image01, u.full_name AS user_name, u.email AS userEmail, u.address AS userAddress, u.age AS userAge, u.mobile AS userMobile
         FROM bookings_tb b
         JOIN properties_tb p ON b.propertyId = p.propertyId
         JOIN users_tb u ON b.user_id = u.user_id
-        WHERE p.landholder_id = ? AND (b.status = 'Accepted' OR b.status = 'Cancelled')
+        WHERE p.landholder_id = ? AND b.status = ?
     ";
     $stmt = $conn->prepare($query);
-    $stmt->execute([$landholderId]);
+    $stmt->execute([$landholderId, $status]);
     $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
@@ -52,14 +55,21 @@ try {
 <body class="bg-gray-100 font-family-karla flex">
     <?php include 'landholder-header.php' ?>
 
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-6">Accepted Bookings</h1>
+    <div class="container mx-auto p-6 overflow-y-auto">
+    <div class="bg-white overflow-hidden sm:rounded-lg p-6">
+        <!-- Dropdown to toggle between Accepted and Cancelled Bookings -->
+        <h1 class="text-2xl font-bold mb-6">
+            <a href="?status=accepted" class="<?= $status === 'Accepted' ? 'text-blue-500' : 'text-gray-500' ?>">Accepted Bookings</a>
+            /
+            <a href="?status=cancelled" class="<?= $status === 'Cancelled' ? 'text-blue-500' : 'text-gray-500' ?>">Cancelled Bookings</a>
+        </h1>
         <div class="grid grid-cols-1 gap-4">
             <?php if (empty($bookings)): ?>
-                <p class="text-center text-gray-500">No accepted bookings yet.</p>
+                <p class="text-center text-gray-500">No <?= strtolower($status) ?> bookings yet.</p>
+                <img src="../images/empty1.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 500px;">
             <?php else: ?>
                 <?php foreach ($bookings as $booking): ?>
-                    <div class="bg-white p-4 rounded-lg shadow-lg flex flex-col md:flex-row relative">
+                    <div class="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row relative border border-gray-400">
                         <img src="../uploaded_image/<?= htmlspecialchars($booking['image01']); ?>" alt="Property Image" class="w-full md:w-1/3 h-48 object-cover rounded-t-lg md:rounded-t-none md:rounded-l-lg">
                         <div class="flex-1 p-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -81,88 +91,90 @@ try {
                             </div>
                             <?php if ($booking['status'] === 'Accepted'): ?> <!-- Check if status is Accepted -->
                                 <button class="bg-red-500 text-white font-bold py-2 px-4 rounded mt-4 absolute bottom-4 right-4 end-rent-btn" data-booking-id="<?= $booking['booking_id']; ?>">End User Rent</button>
-<?php endif; ?>
-</div>
-</div>
-<?php endforeach; ?>
-<?php endif; ?>
-</div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="endRentModal" tabindex="-1" aria-labelledby="endRentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="endRentForm" method="POST" action="end-rent.php">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="endRentModalLabel">End User Rent</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="booking_id" id="booking_id">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="conditionCheck" name="conditionCheck" required>
-                        <label class="form-check-label" for="conditionCheck">Property is in good condition after user stay</label>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="paymentsCheck" name="paymentsCheck" required>
-                        <label class="form-check-label" for="paymentsCheck">Payments are all settled</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="keysCheck" name="keysCheck" required>
-                        <label class="form-check-label" for="keysCheck">Keys, Access Cards Retrieved</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="noticeCheck" name="noticeCheck" required>
-                        <label class="form-check-label" for="noticeCheck">User has received a formal notice of termination</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">End User Rent</button>
-                </div>
-            </form>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
         </div>
     </div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const endRentButtons = document.querySelectorAll('.end-rent-btn');
-        endRentButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const bookingId = this.dataset.bookingId;
-                document.getElementById('booking_id').value = bookingId;
-                const endRentModal = new bootstrap.Modal(document.getElementById('endRentModal'));
-                endRentModal.show();
-            });
-        });
 
-        const endRentForm = document.getElementById('endRentForm');
-        endRentForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            
-            const formData = new FormData(endRentForm);
-            fetch('end-rent.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const bookingId = data.booking_id;
-                    document.querySelector(`.end-rent-btn[data-booking-id='${bookingId}']`).closest('.bg-white').remove();
-                    const endRentModal = bootstrap.Modal.getInstance(document.getElementById('endRentModal'));
-                    endRentModal.hide();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+    <!-- Modal -->
+    <div class="modal fade" id="endRentModal" tabindex="-1" aria-labelledby="endRentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="endRentForm" method="POST action="end-rent.php">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="endRentModalLabel">End User Rent</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="booking_id" id="booking_id">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="conditionCheck" name="conditionCheck" required>
+                            <label class="form-check-label" for="conditionCheck">Property is in good condition after user stay</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="paymentsCheck" name="paymentsCheck" required>
+                            <label class="form-check-label" for="paymentsCheck">Payments are all settled</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="keysCheck" name="keysCheck" required>
+                            <label class="form-check-label" for="keysCheck">Keys, Access Cards Retrieved</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="noticeCheck" name="noticeCheck" required>
+                            <label class="form-check-label" for="noticeCheck">User has received a formal notice of termination</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">End User Rent</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const endRentButtons = document.querySelectorAll('.end-rent-btn');
+            endRentButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const bookingId = this.dataset.bookingId;
+                    document.getElementById('booking_id').value = bookingId;
+                    const endRentModal = new bootstrap.Modal(document.getElementById('endRentModal'));
+                    endRentModal.show();
+                });
+            });
+
+            const endRentForm = document.getElementById('endRentForm');
+            endRentForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                
+                const formData = new FormData(endRentForm);
+                fetch('end-rent.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const bookingId = data.booking_id;
+                        document.querySelector(`.end-rent-btn[data-booking-id='${bookingId}']`).closest('.bg-white').remove();
+                        const endRentModal = bootstrap.Modal.getInstance(document.getElementById('endRentModal'));
+                        endRentModal.hide();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
             });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
+

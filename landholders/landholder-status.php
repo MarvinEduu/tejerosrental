@@ -67,29 +67,29 @@ if ($verificationTier == 'Fully Verified') {
 
 <body class="bg-gray-100 font-family-karla flex">
     <?php include 'landholder-header.php' ?>
-    <div class="container mt-5">
+    <div class="container mt-2 overflow-y-auto ">
         <div class="card">
             <div class="card-header">
                 Seller Verification Status
             </div>
             <div class="card-body">
                 <!-- Status Indicator -->
-                <h5 class="card-title">Account Age: <span id="accountAge">New Landholder</span></h5>
-                <div class="progress" style="height: 30px;">
+                <h5 class="card-title p-2">Account Age: <span id="accountAge">New Landholder</span></h5>
+                <div class="progress" style="height: 50px;">
                     <div class="progress-bar bg-danger" role="progressbar" style="width: <?php echo $progressWidth === '0' ? '25' : '0'; ?>%;" aria-valuenow="<?php echo $progressWidth === '0' ? '100' : '0'; ?>" aria-valuemin="0" aria-valuemax="100">Not Verified</div>
                     <div class="progress-bar bg-warning" role="progressbar" style="width: <?php echo $progressWidth === '50' ? '50' : '0'; ?>%;" aria-valuenow="<?php echo $progressWidth === '50' ? '50' : '0'; ?>" aria-valuemin="0" aria-valuemax="100">Semi-Verified</div>
                     <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $progressWidth === '100' ? '100' : '0'; ?>%;" aria-valuenow="<?php echo $progressWidth === '100' ? '100' : '0'; ?>" aria-valuemin="0" aria-valuemax="100">Fully Verified</div>
                 </div>
                 <!-- Verification Details -->
                 <div class="mt-5">
-                    <h4 class="font-bold mb-3">Why Verification Matters:</h4>
+                    <!-- <h4 class="font-bold mb-3">Why Verification Matters:</h4> -->
                     <ul>
                         <li class="mb-4">
                             <?php if (empty($mobile)) : ?>
                                 <i class="fas fa-times text-danger text-lg"></i> <strong>Not Verified (Mobile Number)</strong><br>
                                 <span class="text-gray-600">Remember: Your account is new or lacks essential verifications. Consider completing all verifications for enhanced trustworthiness.</span>
                             <?php else : ?>
-                                <i class="fas fa-check text-success text-lg"></i> <strong>Verified (Mobile Number)</strong>
+                                <i class="fas fa-check text-success text-lg"></i> <strong> Verified (Mobile Number)</strong>
                             <?php endif; ?>
                         </li>
                         <li class="mb-4">
@@ -115,7 +115,8 @@ if ($verificationTier == 'Fully Verified') {
                                 <?php else : ?>
                                     <i class="fas fa-hourglass-half text-warning text-lg"></i> <strong>Business permit is being reviewed, wait for admin's approval.</strong><br>
                                 <?php endif; ?>
-                            <?php endif; ?>
+                                <img src="../images/verify.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 400px;">
+                            <?php endif; ?> 
                         </li>
                     </ul>
                 </div>

@@ -34,38 +34,6 @@ if ($row) {
 }
 ?>
 
-<!-- Modal for viewing and updating profile -->
-<div class="modal fade" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="viewProfileModalLabel">Landholder Profile</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row g-2">
-          <div class="col-md-6">
-            <!-- Display profile information -->
-            <img src="../uploaded_image/<?php echo $_SESSION['profile_picture']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; padding: 6px; margin-left: 10px;">
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-user fa-lg"></i> <?php echo $_SESSION['full_name']; ?></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-envelope fa-lg"></i> <?php echo $_SESSION['email']; ?></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-phone fa-lg"></i> <?php echo $_SESSION['mobile']; ?></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-home fa-lg"></i> <?php echo $_SESSION['address']; ?></p>
-            <button class="btn btn-primary mt-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#updateProfileModal">Update Profile</button>
-          </div>
-          <div class="col-md-6">
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fab fa-facebook fa-lg"></i> <a href="<?php echo $_SESSION['facebook'] ?: '#'; ?>" target="_blank" style="color: blue;"><?php echo $_SESSION['facebook'] ? "Facebook" : "No social media link yet"; ?></a></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fab fa-linkedin fa-lg"></i> <a href="<?php echo $_SESSION['linkedin'] ?: '#'; ?>" target="_blank" style="color: blue;"><?php echo $_SESSION['linkedin'] ? "LinkedIn" : "No social media link yet"; ?></a></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fab fa-instagram fa-lg"></i> <a href="<?php echo $_SESSION['instagram'] ?: '#'; ?>" target="_blank" style="color: blue;"><?php echo $_SESSION['instagram'] ? "Instagram" : "No social media link yet"; ?></a></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px; text-align: justify;"><i class="fas fa-user-edit fa-lg"></i> <?php echo substr($_SESSION['bio'], 0, 300); ?></p>
-            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-calendar-alt fa-lg"></i> <?php echo $_SESSION['created_at']; ?></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 
 <!-- Modal for updating profile -->
@@ -80,12 +48,12 @@ if ($row) {
         <!-- Update Profile Form -->
         <form id="updateProfileForm" method="post" action="update_profile.php" enctype="multipart/form-data">
           <div class="mb-3">
-            <label for="fullName" class="form-label">Profile Picture:</label>
+            <label for="profile_picture" class="form-label">Profile Picture:</label>
             <img src="../uploaded_image/<?php echo $_SESSION['profile_picture']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; padding: 6px; margin-left: 10px;">
             <input type="file" name="profile_picture" id="profile_picture" accept="image/jpg, image/jpeg, image/png" class="form-control">
           </div>
           <div class="mb-3">
-            <label for="fullName" class="form-label">Full Name</label>
+            <label for="full_name" class="form-label">Full Name</label>
             <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo $_SESSION['full_name']; ?>">
           </div>
           <div class="mb-3">
@@ -100,6 +68,22 @@ if ($row) {
             <label for="address" class="form-label">Address</label>
             <input type="text" class="form-control" id="address" name="address" value="<?php echo $_SESSION['address']; ?>">
           </div>
+          <div class="mb-3">
+            <label for="bio" class="form-label">Bio</label>
+            <textarea class="form-control" id="bio" name="bio"><?php echo $_SESSION['bio']; ?></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="facebook" class="form-label">Facebook</label>
+            <input type="text" class="form-control" id="facebook" name="facebook" value="<?php echo $_SESSION['facebook']; ?>">
+          </div>
+          <div class="mb-3">
+            <label for="linkedin" class="form-label">LinkedIn</label>
+            <input type="text" class="form-control" id="linkedin" name="linkedin" value="<?php echo $_SESSION['linkedin']; ?>">
+          </div>
+          <div class="mb-3">
+            <label for="instagram" class="form-label">Instagram</label>
+            <input type="text" class="form-control" id="instagram" name="instagram" value="<?php echo $_SESSION['instagram']; ?>">
+          </div>
           <!-- Add more fields as needed -->
 
           <div class="modal-footer">
@@ -112,11 +96,8 @@ if ($row) {
   </div>
 </div>
 
-
 <script>
-  // Ensure DOM content is loaded before attaching event listener
   document.addEventListener('DOMContentLoaded', function() {
-    // Log form submission to test functionality
     document.getElementById('updateProfileForm').addEventListener('submit', function(event) {
       console.log('Form submitted'); // Test: Check if form submission is triggered
     });
@@ -196,7 +177,37 @@ if ($row) {
     </div>
   </header>
 
-
+<!-- Modal for viewing and updating profile -->
+<div class="modal fade" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewProfileModalLabel">Landholder Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-2">
+          <div class="col-md-6">
+            <!-- Display profile information -->
+            <img src="../uploaded_image/<?php echo $_SESSION['profile_picture']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; padding: 6px; margin-left: 10px;">
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-user fa-lg"></i> <?php echo $_SESSION['full_name']; ?></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-envelope fa-lg"></i> <?php echo $_SESSION['email']; ?></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-phone fa-lg"></i> <?php echo $_SESSION['mobile']; ?></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-home fa-lg"></i> <?php echo $_SESSION['address']; ?></p>
+            <button class="btn btn-primary mt-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#updateProfileModal">Update Profile</button>
+          </div>
+          <div class="col-md-6">
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fab fa-facebook fa-lg"></i> <a href="<?php echo $_SESSION['facebook'] ?: '#'; ?>" target="_blank" style="color: blue;"><?php echo $_SESSION['facebook'] ? "Facebook" : "No social media link yet"; ?></a></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fab fa-linkedin fa-lg"></i> <a href="<?php echo $_SESSION['linkedin'] ?: '#'; ?>" target="_blank" style="color: blue;"><?php echo $_SESSION['linkedin'] ? "LinkedIn" : "No social media link yet"; ?></a></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fab fa-instagram fa-lg"></i> <a href="<?php echo $_SESSION['instagram'] ?: '#'; ?>" target="_blank" style="color: blue;"><?php echo $_SESSION['instagram'] ? "Instagram" : "No social media link yet"; ?></a></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px; text-align: justify;"><i class="fas fa-user-edit fa-lg"></i> <?php echo substr($_SESSION['bio'], 0, 300); ?></p>
+            <p style="font-size: 1rem; padding: 6px; margin-left: 10px;"><i class="fas fa-calendar-alt fa-lg"></i> <?php echo $_SESSION['created_at']; ?></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

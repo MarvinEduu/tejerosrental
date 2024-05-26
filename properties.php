@@ -1,6 +1,5 @@
 <?php
 include 'components/connection.php';
-
 session_start();
 
 // Number of items per page

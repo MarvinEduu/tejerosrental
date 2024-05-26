@@ -72,6 +72,7 @@ $typeFilter = isset($_GET['type']) ? $_GET['type'] : '';
                 // If no announcements found
                 echo '<div class="bg-white rounded-md shadow-md p-4 mb-6">';
                 echo '<p class="text-gray-700 mb-2 text-center">No announcements found.</p>';
+                echo '<img src="images/empty1.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 500px;">';
                 echo '</div>';
             }
 

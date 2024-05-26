@@ -61,10 +61,12 @@ try {
     <h1 class="text-3xl text-center my-8">Your Previous Rents</h1>
 
     <?php if (empty($previousRents)): ?>
-        <div class="text-center text-gray-700 h-auto">
-            <p>You have no previous rents.</p>
-            <a href="properties.php" class="text-indigo-600 hover:underline">Browse properties</a>
-        </div>
+        <div class="text-center text-gray-700">
+    <p>You have no previous rents.</p>
+    <a href="properties.php" class="text-indigo-600 hover:underline">Browse properties</a>
+    <img src="images/empty1.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 500px;">
+</div>
+
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($previousRents as $rent): ?>

@@ -273,7 +273,7 @@ WHERE lh.landholder_id = ?
                     <?php if ($property) : ?>
                         <div class="mt-8">
                             <p class="text-gray-600 mb-4 text-justify "><span class="font-bold">Description: </span><br> <?= nl2br(htmlspecialchars($property['details'])); ?></p>
-                            <p class="text-gray-600 mb-4">Location:<br> <?= htmlspecialchars($property['address'] . ' ' . $property['city'] . ', ' . $property['state']); ?></p>
+                            <p class="text-gray-600 mb-4"><span class="font-bold text-lg">Location:</span><br> <?= htmlspecialchars($property['address'] . ' ' . $property['city'] . ', ' . $property['state']); ?></p>
                             <div class="flex flex-wrap items-center mb-4">
                                 <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                                     <p class="font-bold">Type of House:</p>
@@ -293,8 +293,6 @@ WHERE lh.landholder_id = ?
                                 </div>
                             </div>
                             <div>
-                                <p class="font-bold text-lg">Status:</p>
-                                <p class="mb-4"><?= htmlspecialchars($property['status']); ?></p>
                                 <p class="font-bold text-lg">Price:</p>
                                 <p>₱ <?= number_format($property['rentAmount']); ?> *price may change depending on finalization.</p>
 

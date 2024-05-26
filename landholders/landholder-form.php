@@ -72,6 +72,8 @@ if (isset($_POST['add_product'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css">
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.css">
+    
 
 
 
@@ -88,6 +90,15 @@ if (isset($_POST['add_product'])) {
             border: 1px solid #d1d5db;
             /* Tailwind's border-gray-300 */
         }
+        .required-label::after {
+            content: " *";
+            color: red;
+        }
+        .parsley-errors-list {
+            color: red;
+            list-style-type: none;
+            padding-left: 0;
+        }
     </style>
 </head>
 
@@ -95,115 +106,132 @@ if (isset($_POST['add_product'])) {
     <?php include 'landholder-header.php'; ?>
     <div class="w-full h-screen overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
+        <?php if(isset($message)): ?>
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline"><?php echo $message; ?></span>
+        </div>
+    <?php endif; ?>
             <h1 class="text-3xl text-black pb-6">Add New Property</h1>
-            <form action="" method="post" enctype="multipart/form-data" class="p-10 bg-white rounded shadow-xl">
-                <input type="hidden" name="landholder_id" value="<?php echo $_SESSION['landholder_id']; ?>">
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="name">Property Name:</label>
-                        <input class="w-full px-5 py-4 text-gray-700 bg-gray-200 rounded" id="name" name="name" type="text" required placeholder="Name">
-                    </div>
-                    <div class="w-full md:w-1/2 px-3">
-                        <label class="block text-sm text-gray-600" for="address">Address:</label>
-                        <input class="w-full px-5 py-4 text-gray-700 bg-gray-200 rounded" id="address" name="address" type="text" required placeholder="Street Address">
-                    </div>
-                </div>
+            <form action="" method="post" enctype="multipart/form-data" class="p-10 bg-white rounded shadow-xl" data-parsley-validate>
+        <input type="hidden" name="landholder_id" value="<?php echo $_SESSION['landholder_id']; ?>">
+        
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="name">Property Name:</label>
+                <input class="w-full px-5 py-4 text-gray-700 bg-gray-200 rounded" id="name" name="name" type="text" required placeholder="Name" data-parsley-minlength="5">
+            </div>
+            <div class="w-full md:w-1/2 px-3">
+                <label class="block text-sm text-gray-600 required-label" for="address">Address:</label>
+                <input class="w-full px-5 py-4 text-gray-700 bg-gray-200 rounded" id="address" name="address" type="text" required placeholder="Street Address">
+            </div>
+        </div>
 
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="city">City:</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="city" name="city" type="text" required placeholder="City">
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="state">State:</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="state" name="state" type="text" required placeholder="State">
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="zipCode">Zip Code:</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="zipCode" name="zipCode" type="text" required placeholder="Zip Code">
-                    </div>
-                </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="city">City:</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="city" name="city" type="text" value="Rosario" readonly>
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="state">State:</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="state" name="state" type="text" value="Cavite" readonly>
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="zipCode">Zip Code:</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="zipCode" name="zipCode" type="text" value="4106" readonly>
+            </div>
+        </div>
 
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="houseType">House Type:</label>
-                        <select class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="houseType" name="houseType" required>
-                            <option value="">Select House Type</option>
-                            <option value="House">House</option>
-                            <option value="Apartment">Apartment</option>
-                            <option value="Dorm">Dorm</option>
-                            <option value="Bedspace">Bedspace</option>
-                        </select>
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="bedroomNum">Number of Bedrooms:</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="bedroomNum" name="bedroomNum" type="number" required placeholder="Number of Bedrooms">
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="bathroomNum">Number of Bathrooms:</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="bathroomNum" name="bathroomNum" type="number" required placeholder="Number of Bathrooms">
-                    </div>
-                </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="houseType">House Type:</label>
+                <select class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="houseType" name="houseType" required>
+                    <option value="">Select House Type</option>
+                    <option value="House">House</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Dorm">Dorm</option>
+                    <option value="Bedspace">Bedspace</option>
+                </select>
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="bedroomNum">Number of Bedrooms:</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="bedroomNum" name="bedroomNum" type="number" required placeholder="Number of Bedrooms">
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="bathroomNum">Number of Bathrooms:</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="bathroomNum" name="bathroomNum" type="number" required placeholder="Number of Bathrooms">
+            </div>
+        </div>
 
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="size">Size (sqm):</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="size" name="size" type="text" required placeholder="Size in square meters">
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="rentAmount">Rent Amount ($):</label>
-                        <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="rentAmount" name="rentAmount" type="text" required placeholder="Rent Amount">
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="size">Size (sqm):</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="size" name="size" type="text" required placeholder="Size in square meters">
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="rentAmount">Rent Amount (₱):</label>
+                <input class="w-full px-5 py-3 text-gray-700 bg-gray-200 rounded" id="rentAmount" name="rentAmount" type="text" required placeholder="Rent Amount" data-parsley-type="number">
+            </div>
+        </div>
 
-                    </div>
-                </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-full px-3">
+                <label class="block text-sm text-gray-600 required-label" for="details">Property Description:</label>
+                <textarea class="w-full px-5 py-2 text-gray-700 bg-gray-200 rounded" id="details" name="details" rows="6" required placeholder="Describe the property, additional policies, regulations and amenities."></textarea>
+            </div>
+        </div>
 
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="image01">Upload Image 1:</label>
+                <input type="file" name="image01" accept="image/*" class="file-input w-full text-gray-700" required>
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="image02">Upload Image 2:</label>
+                <input type="file" name="image02" accept="image/*" class="file-input w-full text-gray-700" required>
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="image03">Upload Image 3:</label>
+                <input type="file" name="image03" accept="image/*" class="file-input w-full text-gray-700" required>
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="image04">Upload Image 4:</label>
+                <input type="file" name="image04" accept="image/*" class="file-input w-full text-gray-700" required>
+            </div>
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <label class="block text-sm text-gray-600 required-label" for="image05">Upload Image 5:</label>
+                <input type="file" name="image05" accept="image/*" class="file-input w-full text-gray-700" required>
+            </div>
+        </div>
 
+        <div class="mt-2">
+            <div id="map" style="height: 400px;"></div>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+        </div>
 
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-full px-3">
-                        <label class="block text-sm text-gray-600" for="details">Property Description:</label>
-                        <textarea class="w-full px-5 py-2 text-gray-700 bg-gray-200 rounded" id="details" name="details" rows="6" required placeholder="Describe the property"></textarea>
-                    </div>
-                </div>
+        <div class="mt-6">
+            <button class="px-4 pt-3 pb-3 text-white font-light tracking-wider bg-blue-900 rounded" type="submit" name="add_product">Submit</button>
+            <button class="px-4 pt-3 pb-3 text-gray-900 font-light tracking-wider bg-gray-200 rounded" type="button" onclick="window.location.href='landholder-table.php'">Cancel</button>
+        </div>
+    </form>
 
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="image01">Upload Image 1:</label>
-                        <input type="file" name="image01" accept="image/*" class="file-input w-full text-gray-700" required>
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="image02">Upload Image 2:</label>
-                        <input type="file" name="image02" accept="image/*" class="file-input w-full text-gray-700" required>
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="image03">Upload Image 3:</label>
-                        <input type="file" name="image03" accept="image/*" class="file-input w-full text-gray-700" required>
-                    </div>
-                </div>
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="image04">Upload Image 4:</label>
-                        <input type="file" name="image04" accept="image/*" class="file-input w-full text-gray-700" required>
-                    </div>
-                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block text-sm text-gray-600" for="image05">Upload Image 5:</label>
-                        <input type="file" name="image05" accept="image/*" class="file-input w-full text-gray-700" required>
-                    </div>
-                </div>
-                <!-- Images and other inputs continue here -->
-                <div class="mt-2">
+   
 
-                    <div id="map" style="height: 400px;"></div>
-                    <input type="hidden" id="latitude" name="latitude">
-                    <input type="hidden" id="longitude" name="longitude">
-                </div>
-                <div class="mt-6">
-                    <button class="px-4 pt-3 pb-3 text-white font-light tracking-wider bg-blue-900 rounded" type="submit" name="add_product">Submit</button>
-                    <button class="px-4 pt-3 pb-3 text-gray-900 font-light tracking-wider bg-gray-200 rounded" type="button" onclick="window.location.href='landholder-table.php'">Cancel</button>
-                </div>
-            </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+    
+    <script>
+        document.getElementById('rentAmount').addEventListener('input', function (e) {
+            var value = e.target.value;
+            value = value.replace(/\D/g, '');  // Remove non-digit characters
+            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '');  // Add commas for thousands
+            e.target.value = value;
+        });
+    </script>
             <!-- Button to pin current location -->
             <div class="flex justify-end mt-2">
                 <button onclick="pinCurrentLocation()" class="text-white px-4 py-2 bg-blue-500 rounded hover:bg-blue-600">

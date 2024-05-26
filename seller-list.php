@@ -208,7 +208,7 @@ $total_sellers = $total_sellers_query->fetch(PDO::FETCH_ASSOC)['total'];
                 while ($fetch_seller = $select_sellers->fetch(PDO::FETCH_ASSOC)) {
             ?>
                     <a href="seller-details.php?id=<?= $fetch_seller['landholder_id']; ?>" class="seller-grid-item">
-                        <div class="box bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center">
+                        <div class="box bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center border border-gray-300">
                             <!-- Display seller profile image -->
                             <div class="seller-profile">
                                 <img src="uploaded_image/<?= $fetch_seller['profile_picture']; ?>" alt="<?= $fetch_seller['full_name']; ?>" class="w-full h-full object-cover rounded-md">
