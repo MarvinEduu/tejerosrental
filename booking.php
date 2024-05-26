@@ -3,6 +3,13 @@ include 'components/connection.php';
 
 session_start();
 
+// Ensure property ID is passed via URL
+if (!isset($_GET['pid'])) {
+    // Redirect or handle error if property ID is missing
+    header('Location: booking-calendar.php');
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -27,12 +34,6 @@ session_start();
 <body>
 
 <?php
-// Ensure property ID is passed via URL
-if (!isset($_GET['pid'])) {
-    // Redirect or handle error if property ID is missing
-    header('Location: booking-calendar.php');
-    exit;
-}
 
 // Fetch property details using the provided property ID (pid)
 $pid = $_GET['pid'];
@@ -80,6 +81,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_booking'])) {
     $totalRent = $months * $rentAmount;
 
     try {
+        // Check if the user currently has an accepted booking
+        $checkAcceptedBooking = $conn->prepare("SELECT COUNT(*) FROM bookings_tb WHERE user_id = ? AND status = 'Accepted'");
+        $checkAcceptedBooking->execute([$userId]);
+        $acceptedBookingCount = $checkAcceptedBooking->fetchColumn();
+
+        if ($acceptedBookingCount > 0) {
+            // User currently has an accepted booking, handle accordingly (e.g., show error message)
+            echo '<script>
+            Swal.fire({
+              icon: "error",
+              title: "You are currently on booked already.",
+              showConfirmButton: false,
+              timer: 2000
+            }).then(function() {
+                window.location.href = "own-booking.php";
+            });
+          </script>';
+          exit;
+        }
+
         // Check if the user has already booked this property
         $checkExistingBooking = $conn->prepare("SELECT COUNT(*) FROM bookings_tb WHERE user_id = ? AND propertyId = ?");
         $checkExistingBooking->execute([$userId, $pid]);

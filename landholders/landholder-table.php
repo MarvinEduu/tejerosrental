@@ -173,6 +173,13 @@ $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </script>
 
+<script>
+    function printProperty(propertyId) {
+        window.open('print-property.php?id=' + propertyId, '_blank');
+    }
+</script>
+
+
     <!-- AlpineJS -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <!-- Font Awesome -->
