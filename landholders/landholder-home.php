@@ -188,7 +188,7 @@ $totalBookings = $totalBookingsResult['totalBookings'];
                                 <p class="text-center text-gray-500">No ratings yet.</p>
                             <?php else : ?>
                                 <?php for ($i = 0; $i < min(2, count($ratings)); $i++) : ?>
-                                    <div class="bg-white p-4 rounded-lg shadow-lg flex flex-col md:flex-row">
+                                    <div class="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row">
                                         <img src="../uploaded_image/<?= htmlspecialchars($ratings[$i]['profile_picture']); ?>" alt="User Image" class="w-20 h-20 rounded-full">
                                         <div class="flex-1 p-4">
                                             <div class="flex justify-between">

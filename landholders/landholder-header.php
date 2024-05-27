@@ -106,10 +106,10 @@ if ($row) {
 
 
 
-<aside class="relative bg-sidebar h-screen w-96 hidden sm:block shadow-xl ">
+<aside class="relative bg-[#5098b3] h-screen w-96 hidden sm:block shadow-xl ">
   <div class="p-8 flex flex-col items-center justify-center"> <!-- Use flex to align items vertically and horizontally -->
     <div class="flex items-center mb-3"> <!-- Nested flex container for vertical alignment -->
-      <img src="../images/logoer.png" alt="Logo" class="h-20 w-20 mr-3"> <!-- Logo image -->
+      <img src="../images/logo1.png" alt="Logo" class="h-20 w-20 mr-3"> <!-- Logo image -->
       <h1 class="text-white text-xl font-semibold">Tejeros Rental</h1>
     </div>
 

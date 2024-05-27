@@ -138,11 +138,11 @@ $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     
     <div class="container mx-auto p-6 overflow-y-auto">
-    <div class="bg-blue-100 shadow overflow-hidden sm:rounded-lg p-6">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
 <!-- Display properties -->
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
     <?php foreach ($properties as $property) { ?>
-        <div class="bg-white rounded-lg shadow-md overflow-hidden flex">
+        <div class="bg-white rounded-md shadow-md overflow-hidden flex border border-gray-400">
             <!-- Display property image -->
             <img src="../uploaded_image/<?php echo htmlspecialchars($property['image01']); ?>" alt="Property Image" class="w-80 h-80 object-cover rounded-lg p-3">
             <div class="py-4 flex flex-col justify-between">
@@ -158,8 +158,6 @@ $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php } ?>
 </div>
 </div>
-
-
 
     <!-- Pagination -->
     <nav class="mt-6 flex justify-center">

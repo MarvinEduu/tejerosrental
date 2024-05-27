@@ -12,7 +12,7 @@ session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rental Capstone</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" type="image/x-icon" href="images/logoer.png">
+  <link rel="icon" type="image/x-icon" href="images/logo1.svg">
 
   <link href="vendor/daisyui/full.min.css" rel="stylesheet" type="text/css" />
   <script src="vendor/tailwind/tailwind.js"></script>

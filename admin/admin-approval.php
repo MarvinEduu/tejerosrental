@@ -84,7 +84,7 @@ $pendingPropertiesMessage = "You have $numPendingProperties pending " . ($numPen
     <h1 class="text-2xl font-bold mb-6 text-center">Pending Properties</h1>
 
     <!-- Messages Container -->
-    <div class="bg-blue-100 shadow overflow-hidden sm:rounded-lg">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <!-- Header -->
         <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Pending Properties</h3>
@@ -192,6 +192,7 @@ $pendingPropertiesMessage = "You have $numPendingProperties pending " . ($numPen
     <?php if (empty($pendingProperties)) : ?>
         <div class="border border-gray-200 p-4 rounded-lg bg-white shadow-sm text-center">
             <p class="text-sm text-gray-500">No pending properties found.</p>
+            <img src="../images/empty1.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 500px;">
         </div>
     <?php endif; ?>
 </div>

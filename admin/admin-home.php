@@ -91,8 +91,35 @@ foreach ($data as $row) {
     }
 }
 
+// Fetch the top five most liked properties
+$query = "
+    SELECT p.propertyId, p.name, p.address, p.houseType, p.rentAmount, COUNT(l.like_id) as like_count
+    FROM properties_tb p
+    JOIN likes_tb l ON p.propertyId = l.propertyId
+    GROUP BY p.propertyId
+    ORDER BY like_count DESC
+    LIMIT 5
+";
+$stmt = $conn->prepare($query);
+$stmt->execute();
+$popularProperties = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Extract data for the chart
+$propertyNames = array_column($popularProperties, 'name');
+$likeCounts = array_column($popularProperties, 'like_count');
 
+// Combine property names and like counts into an associative array
+$propertyData = array_combine($propertyNames, $likeCounts);
+
+// Sort properties by like count in descending order
+arsort($propertyData);
+
+// Get the top 3 properties
+$topPropertyData = array_slice($propertyData, 0, 3, true);
+
+// Separate the top properties back into names and like counts
+$topPropertyNames = array_keys($topPropertyData);
+$topLikeCounts = array_values($topPropertyData);
 ?>
 
 <!DOCTYPE html>
@@ -105,7 +132,6 @@ foreach ($data as $row) {
     <meta name="author" content="David Grzyb">
     <meta name="description" content="">
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -118,6 +144,8 @@ foreach ($data as $row) {
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 
 <body class="bg-gray-100 font-family-karla flex">
@@ -131,8 +159,8 @@ foreach ($data as $row) {
                     <p class="text-2xl pb-3 flex items-center">
                         <i class="fas fa-plus mr-3"></i> Properties Status
                     </p>
-                    <div class="p-6 bg-white">
-                        <canvas id="propertyStatusChart" width="400" height="200"></canvas>
+                    <div class="p-6 bg-white h-96">
+                        <div id="propertyStatusChart"></div>
                     </div>
                 </div>
                 <div class="w-full lg:w-1/2 pl-0 lg:pl-2 mt-12 lg:mt-0">
@@ -140,7 +168,7 @@ foreach ($data as $row) {
                         <i class="fas fa-check mr-3"></i> Sort Specification
                     </p>
                     <div class="p-7 bg-white">
-                        <table class="table-auto w-full">
+                        <table class="table-auto w-full h-80">
                             <thead>
                                 <tr>
                                     <th class="px-4 py-2">House Type</th>
@@ -162,116 +190,129 @@ foreach ($data as $row) {
                         </table>
                     </div>
                 </div>
-
-
-
             </div>
-            <div id="map" style="height: 600px; width: 100%;"></div>
-
             <div class="flex flex-wrap mt-6">
                 <div class="w-full lg:w-1/2 pr-0 lg:pr-2">
                     <p class="text-2xl pb-3 flex items-center">
-                        <i class="fas fa-plus mr-3"></i> Landholder Verification Overview
+                    <i class="fas fa-shield-alt mr-3"></i> Landholder Verification Overview
+
                     </p>
-                    <div class="p-6 bg-white">
-                    <canvas id="verificationTierChart" width="400" height="200"></canvas>
+                    <div class="p-6 bg-white h-96">
+                        <div id="verificationTierChart"></div>
                     </div>
                 </div>
                 <div class="w-full lg:w-1/2 pl-0 lg:pl-2 mt-12 lg:mt-0">
                     <p class="text-2xl pb-3 flex items-center">
-                        <i class="fas fa-check mr-3"></i> Sort Specification
+                        <i class="fas fa-fire mr-3"></i> Most Popular Properties
                     </p>
-                    <div class="p-7 bg-white">
-                        
+                    <div class="p-4 bg-white h-96">
+                        <div id="popularPropertiesChart"></div>
                     </div>
                 </div>
-
-
-
             </div>
+            <div id="map" style="height: 600px; width: 100%;"></div>
+
         </main>
-        
-        <canvas id="verificationTierChart" width="400" height="200"></canvas>
-
     </div>
-
-
-
-
-
+    
     <script>
-        // Prepare data for Chart.js
+        // Prepare data for ApexCharts
         const houseTypes = <?= json_encode($houseTypes) ?>;
         const statusLabels = ['Approved', 'Pending', 'Rejected'];
         const datasets = [];
 
         // Prepare datasets for each status
         statusLabels.forEach((status) => {
-            const data = houseTypes.map((type) => countsByStatus[status][type] || 0);
+            const data = houseTypes.map((type) => <?= json_encode($countsByStatus) ?>[status][type] || 0);
             datasets.push({
-                label: status,
+                name: status,
                 data: data,
-                backgroundColor: status === 'Approved' ? 'rgba(54, 162, 235, 0.5)' : status === 'Pending' ? 'rgba(255, 206, 86, 0.5)' : 'rgba(255, 99, 132, 0.5)',
-                borderColor: status === 'Approved' ? 'rgba(54, 162, 235, 1)' : status === 'Pending' ? 'rgba(255, 206, 86, 1)' : 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
+                color: status === 'Approved' ? '#36a2eb' : status === 'Pending' ? '#ffce56' : '#ff6384'
             });
         });
 
-        // Create Chart.js instance for house type overview
-        const ctxListing = document.getElementById('listingChart').getContext('2d');
-        const myListingChart = new Chart(ctxListing, {
-            type: 'bar',
-            data: {
-                labels: houseTypes,
-                datasets: datasets
+        // Create ApexCharts instance for house type overview
+        var optionsListing = {
+            chart: {
+                type: 'bar',
+                height: 350
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            series: datasets,
+            xaxis: {
+                categories: houseTypes
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            yaxis: {
+                title: {
+                    text: 'Count'
                 }
-            }
-        });
-    </script>
+            },
+            fill: {
+                opacity: 1
+            },
+        };
 
+        var listingChart = new ApexCharts(document.querySelector("#listingChart"), optionsListing);
+        listingChart.render();
+    </script>
 
     <script>
         // Data for property status chart
         const propertyStatusLabels = ['Approved', 'Pending', 'Rejected'];
         const propertyStatusData = [<?= $approvedCount ?>, <?= $pendingCount ?>, <?= $rejectedCount ?>];
 
-        // Create Chart.js instance for property status
-        const ctxPropertyStatus = document.getElementById('propertyStatusChart').getContext('2d');
-        const myPropertyStatusChart = new Chart(ctxPropertyStatus, {
-            type: 'bar',
-            data: {
-                labels: propertyStatusLabels,
-                datasets: [{
-                    label: 'Property Status',
-                    data: propertyStatusData,
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.5)', // Blue for Approved
-                        'rgba(255, 206, 86, 0.5)', // Yellow for Pending
-                        'rgba(255, 99, 132, 0.5)', // Red for Rejected
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(255, 99, 132, 1)',
-                    ],
-                    borderWidth: 1
-                }]
+        // Create ApexCharts instance for property status
+        var optionsPropertyStatus = {
+            chart: {
+                type: 'bar',
+                height: 350
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            series: [{
+                name: 'Property Status',
+                data: propertyStatusData,
+                colors: ['#36a2eb', '#ffce56', '#ff6384']
+            }],
+            xaxis: {
+                categories: propertyStatusLabels
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val;
+                },
+                style: {
+                    fontSize: '12px',
+                    colors: ['#fff']
                 }
-            }
-        });
+            },
+            yaxis: {
+                title: {
+                    text: 'Count'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+        };
 
+        var propertyStatusChart = new ApexCharts(document.querySelector("#propertyStatusChart"), optionsPropertyStatus);
+        propertyStatusChart.render();
 
         // Leaflet Map Initialization
         var map = L.map('map').setView([14.3816, 120.8791], 11); // Initial map view (centered and zoom level)
@@ -289,61 +330,112 @@ foreach ($data as $row) {
 
             // Construct popup content
             var popupContent = '<div>' +
-                '<b>Property Name:</b> ' + holder.name + '<br>' +
-                '<b>Address:</b> ' + holder.address + '<br>' +
-                '<b>House Type:</b> ' + holder.houseType + '<br>' +
-                '<b>Rent Amount:</b> ' + holder.rentAmount + '<br>' +
-                '<b>Status:</b> ' + holder.status + '<br>' +
-                '<b>Date Listed:</b> ' + formattedDate +
-                '</div>';
+                    '<b>Property Name:</b> ' + holder.name + '<br>' +
+                    '<b>Address:</b> ' + holder.address + '<br>' +
+                    '<b>House Type:</b> ' + holder.houseType + '<br>' +
+                    '<b>Rent Amount:</b> ' + holder.rentAmount + '<br>' +
+                    '<b>Status:</b> ' + holder.status + '<br>' +
+                    '<b>Date Listed:</b> ' + formattedDate +
+                    '</div>';
 
+                // Create marker with popup
+                L.marker([parseFloat(holder.latitude), parseFloat(holder.longitude)])
+                    .addTo(map)
+                    .bindPopup(popupContent);
+            });
+        </script>
 
-            // Create marker with popup
-            L.marker([parseFloat(holder.latitude), parseFloat(holder.longitude)])
-                .addTo(map)
-                .bindPopup(popupContent);
-        });
-    </script>
+        <!-- ApexCharts Line Chart for Verification Tiers -->
+        <script>
+            // Data for verification tier line chart
+            const verificationTierLabels = ['Not Verified', 'Semi-Verified', 'Fully Verified'];
+            const verificationTierData = [<?= $notVerifiedCount ?>, <?= $semiVerifiedCount ?>, <?= $fullyVerifiedCount ?>];
 
-    <!-- Chart.js Line Chart for Verification Tiers -->
-    <script>
-        // Data for verification tier line chart
-        const verificationTierLabels = ['Not Verified', 'Semi-Verified', 'Fully Verified'];
-        const verificationTierData = [<?= $notVerifiedCount ?>, <?= $semiVerifiedCount ?>, <?= $fullyVerifiedCount ?>];
-
-        // Create Chart.js instance for verification tier line chart
-        const ctxVerificationTier = document.getElementById('verificationTierChart').getContext('2d');
-        const myVerificationTierChart = new Chart(ctxVerificationTier, {
-            type: 'line',
-            data: {
-                labels: verificationTierLabels,
-                datasets: [{
-                    label: 'Landholders Verification Tier',
+            // Create ApexCharts instance for verification tier line chart
+            var optionsVerificationTier = {
+                chart: {
+                    type: 'line',
+                    height: 350
+                },
+                series: [{
+                    name: 'Landholders Verification Tier',
                     data: verificationTierData,
-                    fill: false,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+                    colors: ['#4bc0c0']
+                }],
+                xaxis: {
+                    categories: verificationTierLabels
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                yaxis: {
+                    title: {
+                        text: 'Count'
                     }
                 }
-            }
-        });
-    </script>
+            };
 
+            var verificationTierChart = new ApexCharts(document.querySelector("#verificationTierChart"), optionsVerificationTier);
+            verificationTierChart.render();
+        </script>
 
+        <!-- ApexCharts Bar Chart for Popular Properties -->
+        <script>
+            // Data for popular properties chart
+            const popularPropertyNames = <?= json_encode($topPropertyNames) ?>;
+            const popularPropertyLikes = <?= json_encode($topLikeCounts) ?>;
 
-    <!-- AlpineJS -->
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-    <!-- Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
-    <!-- ChartJS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
+            // Create ApexCharts instance for popular properties bar chart
+            var optionsPopularProperties = {
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                series: [{
+                    name: 'Likes',
+                    data: popularPropertyLikes,
+                    colors: ['#f39c12']
+                }],
+                xaxis: {
+                    categories: popularPropertyNames
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val;
+                    },
+                    style: {
+                        fontSize: '12px',
+                        colors: ['#fff']
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Number of Likes'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+            };
 
-</body>
+            var popularPropertiesChart = new ApexCharts(document.querySelector("#popularPropertiesChart"), optionsPopularProperties);
+            popularPropertiesChart.render();
+        </script>
 
+        <!-- AlpineJS -->
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+        <!-- Font Awesome -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+    </body>
 </html>

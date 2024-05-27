@@ -100,8 +100,8 @@ if (isset($_SESSION['user_id'])) {
 
 <div class="navbar bg-white sticky top-0 z-50" >
     <div class="flex-1">
-    <img src="images/logoer.png" alt="Tejeros Rental Logo" class="m-2 h-14 w-14">
-        <a href="loading-page-in.php" class="btn btn-ghost text-lg">Tejeros Rental</a>
+    <img src="images/logo1.png" alt="Tejeros Rental Logo" class="p-2 h-16 w-16">
+        <a href="loading-page-in.php" class="btn btn-ghost text-lg"><span style="color: #5098b3;">Tejeros</span>Rental</a>
         <link rel="icon" type="image/x-icon" href="/images/logoer.png">
     </div>
     <div class="navbar-center hidden lg:flex flex-2">

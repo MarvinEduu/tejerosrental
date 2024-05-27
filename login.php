@@ -10,7 +10,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Registration Form</title>
-    <link rel="icon" type="image/x-icon" href="images/logoer.png">
+    <link rel="icon" type="image/x-icon" href="images/logo1.svg">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -397,9 +397,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_landholder'])
     <!-- Logo and Text -->
     <a href="loading-page-in.php" id="logo-text">
         <!-- Logo -->
-        <img src="images/logoer.png" alt="Logo">
+        <img src="images/logo1.png" alt="Logo">
         <!-- Text -->
-        <h1 class="text-lg font-bold text-gray-700">Tejeros Rental</h1>
+        <h1 class="text-lg font-bold text-gray-700"><span style="color: #5098b3;">Tejeros</span> Rental</h1>
     </a>
     <div class="container max-w-4xl mx-auto p-8 rounded-lg shadow-lg" style="background-color: var(--white-color);">
         <div class="grid grid-cols-2 gap-4">

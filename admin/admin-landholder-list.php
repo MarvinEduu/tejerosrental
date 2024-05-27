@@ -97,10 +97,10 @@ $landholders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Display landholders -->
 <div class="container mx-auto p-6 overflow-y-auto">
-    <div class="bg-blue-100 shadow overflow-hidden sm:rounded-lg p-6">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
             <?php foreach ($landholders as $landholder) { ?>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-400">
                     <div class="p-4">
                         <div class="flex items-center mb-4">
                             <?php 

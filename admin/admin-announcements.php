@@ -39,7 +39,7 @@ session_start();
 <div class="container mx-auto overflow-y-auto py-8 px-6">
     <h1 class="text-2xl font-bold mb-6 text-center">Post An Announcement</h1>
 
-    <div class="bg-blue-100 shadow overflow-hidden sm:rounded-lg">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <!-- Header -->
         <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Post Announcement</h3>
@@ -48,7 +48,7 @@ session_start();
         <form action="process_create_announcement.php" method="post">
             <div class=" my-4 mx-4">
                 <label for="type" class="block text-md font-medium text-gray-700">Choose Type: </label>
-                <select id="type" name="type" class="mt-2 bg-white block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-14 px-3">
+                <select id="type" name="type" class="mt-2 bg-white block w-full border border-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-14 px-3">
                     <option value="updates">Updates</option>
                     <option value="blogs">Blogs</option>
                     <option value="others">Others</option>
@@ -56,11 +56,11 @@ session_start();
             </div>
             <div class="my-4 mx-4">
                 <label for="title" class="block text-md font-medium text-gray-700">Title: </label>
-                <input type="text" id="title" name="title" class="mt-2 bg-white block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-14 px-3" placeholder="Input title">
+                <input type="text" id="title" name="title" class="mt-2 bg-white block w-full border border-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-14 px-3" placeholder="Input title">
             </div>
             <div class="my-4 mx-4">
                 <label for="details" class="block text-sm font-medium text-gray-700">Details</label>
-                <textarea id="details" name="details" rows="4" class="mt-2 bg-white block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-36 px-3"></textarea>
+                <textarea id="details" name="details" rows="4" class="mt-2 bg-white block w-full border border-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-36 px-3"></textarea>
             </div>
             <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600  my-4 mx-4">Create Announcement</button>
         </form>

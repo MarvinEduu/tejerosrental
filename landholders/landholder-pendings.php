@@ -48,7 +48,7 @@ try {
 
     <div class="container mx-auto p-6 overflow-y-auto">
         <div class="bg-white overflow-hidden sm:rounded-lg p-6">
-            <h1 class="text-3xl font-bold mb-6">Pending Bookings</h1>
+            <h1 class="text-2xl font-bold mb-6">Pending Bookings</h1>
 
             <!-- Display messages -->
             <?php if (isset($_SESSION['message'])): ?>
