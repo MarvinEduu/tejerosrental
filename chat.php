@@ -9,7 +9,6 @@ if (!isset($_SESSION['user_id'])) {
     exit; // Stop further script execution
 }
 
-
 // Fetch landholders for the user to chat with
 try {
     $landholders = $conn->query("SELECT landholder_id, username, full_name FROM landholders_tb");
@@ -63,7 +62,8 @@ if (isset($_GET['receiver_id'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-theme="winter">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,12 +72,12 @@ if (isset($_GET['receiver_id'])) {
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="images/logoer.png">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.8.0/dist/full.min.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <style>
         .chat-bubble {
@@ -103,6 +103,7 @@ if (isset($_GET['receiver_id'])) {
         }
     </style>
 </head>
+
 <body>
     <?php include 'user/user-header.php' ?>
     <div class="container-fluid p-10">
@@ -111,9 +112,16 @@ if (isset($_GET['receiver_id'])) {
                 <h4>Landholders</h4>
                 <div class="list-group">
                     <?php foreach ($landholders as $landholder): ?>
-                        <a href="?receiver_id=<?= $landholder['landholder_id'] ?>" class="list-group-item list-group-item-action"><?= $landholder['username'] ?></a>
+                        <a href="?receiver_id=<?= $landholder['landholder_id'] ?>" class="list-group-item list-group-item-action">
+                            <img src="uploaded_image/<?= $landholder['profile_picture'] ?>" alt="profile_picture" class="profile-picture">
+                            <?= $landholder['username'] ?>
+                        </a>
                     <?php endforeach; ?>
                 </div>
+                <!-- Button to open modal -->
+                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#allLandholdersModal">
+                    All Landholders
+                </button>
             </div>
 
             <div class="col-8">
@@ -132,34 +140,59 @@ if (isset($_GET['receiver_id'])) {
                 </div>
 
                 <?php if (isset($_GET['receiver_id'])): ?>
-        <form method="POST" id="messageForm">
-            <input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-            <input type="hidden" name="receiver_id" value="<?= $_GET['receiver_id'] ?>">
-            <textarea name="message_text" class="form-control mb-2" placeholder="Write your message here..." required></textarea>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-        </form>
-    <?php endif; ?>
+                    <form method="POST" id="messageForm" class="d-flex align-items-center">
+                        <input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
+                        <input type="hidden" name="receiver_id" value="<?= $_GET['receiver_id'] ?>">
+                        <textarea name="message_text" class="form-control mb-2 me-2" placeholder="Write your message here..." required></textarea>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="allLandholdersModal" tabindex="-1" aria-labelledby="allLandholdersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="allLandholdersModalLabel">All Landholders</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <?php foreach ($landholders as $landholder): ?>
+                            <li class="list-group-item">
+                                <a href="?receiver_id=<?= $landholder['landholder_id'] ?>" class="stretched-link">
+                                    <img src="uploaded_image/<?= $landholder['profile_picture'] ?>" alt="Profile Picture" class="profile-picture">
+                                    <?= $landholder['username'] ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include 'user/user-footer.php' ?>
 
     <script>
-    document.getElementById('messageForm').addEventListener('submit', function(event) {
-        // No need to prevent default form submission
-        // Form submission will proceed as normal
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            // No need to prevent default form submission
+            // Form submission will proceed as normal
 
-        // Dynamically update the URL to maintain state
-        const receiverId = document.querySelector('input[name="receiver_id"]').value;
+            // Dynamically update the URL to maintain state
+            const receiverId = document.querySelector('input[name="receiver_id"]').value;
 
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('receiver_id', receiverId);
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('receiver_id', receiverId);
 
-        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-        window.history.replaceState({ path: newUrl }, '', newUrl);
-    });
-</script>
+            const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+            window.history.replaceState({ path: newUrl }, '', newUrl);
+        });
+    </script>
 
 </body>
 </html>
