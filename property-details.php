@@ -307,8 +307,6 @@ WHERE lh.landholder_id = ?
                         <p class="text-lg text-gray-600">Property not found.</p>
                     <?php endif; ?>
                 </div>
-
-
             </div>
 
             <!-- Landholder Information -->
@@ -365,9 +363,6 @@ WHERE lh.landholder_id = ?
                 </div>
             <?php endif; ?>
 
-
-
-
         </div>
 
         <!-- Similar Properties Section -->
@@ -375,55 +370,51 @@ WHERE lh.landholder_id = ?
             <div class="mt-8">
                 <h3 class="text-2xl font-bold mb-4">Similar Properties</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <?php foreach ($similar_properties as $sim_prop) : ?>
-    <form action="" method="post" class="box bg-white rounded-lg shadow-md p-6 border border-gray-300">
-        <input type="hidden" name="pid" value="<?= htmlspecialchars($sim_prop['propertyId']); ?>">
-        <input type="hidden" name="name" value="<?= htmlspecialchars($sim_prop['name']); ?>">
-        <input type="hidden" name="price" value="<?= htmlspecialchars($sim_prop['rentAmount']); ?>">
-        <input type="hidden" name="bathroomNum" value="<?= htmlspecialchars($sim_prop['bathroomNum']); ?>">
-        <input type="hidden" name="image" value="<?= htmlspecialchars($sim_prop['image01']); ?>">
-        <input type="hidden" name="size" value="<?= htmlspecialchars($sim_prop['size']); ?>">
-        <a href="property-details.php?pid=<?= htmlspecialchars($sim_prop['propertyId']); ?>" class="block">
-            <img src="uploaded_image/<?= htmlspecialchars($sim_prop['image01']); ?>" alt="<?= htmlspecialchars($sim_prop['name']); ?>" class="w-full h-64 object-cover rounded-t-lg">
-            <div class="px-2 py-2">
-                <div class="flex justify-between items-center">
-                    <div class="price text-lg font-semibold text-gray-800"><?= htmlspecialchars($sim_prop['name']); ?></div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="name text-gray-600 flex items-center">
-                        <i class='bx bx-map-alt bx-sm'></i>&nbsp; <?= htmlspecialchars($sim_prop['city']); ?>, <?= htmlspecialchars($sim_prop['houseType']); ?>
-                    </div>
-                    <div class="flex items-center">
-                        <i class='bx bx-bath mr-1 bx-sm'></i>&nbsp;
-                        <span><?= htmlspecialchars($sim_prop['bathroomNum']); ?></span>
-                        <i class='bx bx-bed ml-2 mr-1 bx-sm'></i>&nbsp;
-                        <span><?= htmlspecialchars($sim_prop['bedroomNum']); ?></span>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="status text-gray-600 flex items-center">
-                        <i class='bx bx-coin-stack mr-1 bx-sm'></i>&nbsp;₱ <?= number_format($sim_prop['rentAmount'], 0, '.', ','); ?>
-                    </div>
-                    <div class="size text-gray-600 flex items-center">
-                        <i class='bx bx-ruler mr-1 bx-sm'></i>&nbsp;<?= htmlspecialchars($sim_prop['size']); ?> sqm
-                    </div>
-                </div>
-            </div>
-        </a>
-    </form>
-<?php endforeach; ?>
+                    <?php foreach ($similar_properties as $sim_prop) : ?>
+                        <form action="" method="post" class="box bg-white rounded-lg shadow-md p-6 border border-gray-300">
+                            <input type="hidden" name="pid" value="<?= htmlspecialchars($sim_prop['propertyId']); ?>">
+                            <input type="hidden" name="name" value="<?= htmlspecialchars($sim_prop['name']); ?>">
+                            <input type="hidden" name="price" value="<?= htmlspecialchars($sim_prop['rentAmount']); ?>">
+                            <input type="hidden" name="bathroomNum" value="<?= htmlspecialchars($sim_prop['bathroomNum']); ?>">
+                            <input type="hidden" name="image" value="<?= htmlspecialchars($sim_prop['image01']); ?>">
+                            <input type="hidden" name="size" value="<?= htmlspecialchars($sim_prop['size']); ?>">
+                            <a href="property-details.php?pid=<?= htmlspecialchars($sim_prop['propertyId']); ?>" class="block">
+                                <img src="uploaded_image/<?= htmlspecialchars($sim_prop['image01']); ?>" alt="<?= htmlspecialchars($sim_prop['name']); ?>" class="w-full h-64 object-cover rounded-t-lg">
+                                <div class="px-2 py-2">
+                                    <div class="flex justify-between items-center">
+                                        <div class="price text-lg font-semibold text-gray-800"><?= htmlspecialchars($sim_prop['name']); ?></div>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <div class="name text-gray-600 flex items-center">
+                                            <i class='bx bx-map-alt bx-sm'></i>&nbsp; <?= htmlspecialchars($sim_prop['city']); ?>, <?= htmlspecialchars($sim_prop['houseType']); ?>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class='bx bx-bath mr-1 bx-sm'></i>&nbsp;
+                                            <span><?= htmlspecialchars($sim_prop['bathroomNum']); ?></span>
+                                            <i class='bx bx-bed ml-2 mr-1 bx-sm'></i>&nbsp;
+                                            <span><?= htmlspecialchars($sim_prop['bedroomNum']); ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <div class="status text-gray-600 flex items-center">
+                                            <i class='bx bx-coin-stack mr-1 bx-sm'></i>&nbsp;₱ <?= number_format($sim_prop['rentAmount'], 0, '.', ','); ?>
+                                        </div>
+                                        <div class="size text-gray-600 flex items-center">
+                                            <i class='bx bx-ruler mr-1 bx-sm'></i>&nbsp;<?= htmlspecialchars($sim_prop['size']); ?> sqm
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </form>
+                    <?php endforeach; ?>
 
                 </div>
             </div>
         <?php endif; ?>
-
-
     </div>
     </div>
     </div>
     </div>
-
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -477,7 +468,6 @@ WHERE lh.landholder_id = ?
                     .catch(error => {
                         console.error('Error fetching data:', error);
                     });
-
                 // Function to navigate to property on Google Maps
                 function navigateToProperty() {
                     if (navigator.geolocation) {
@@ -494,7 +484,6 @@ WHERE lh.landholder_id = ?
                         alert('Geolocation is not supported by this browser.');
                     }
                 }
-
                 // Add event listener to the button
                 document.getElementById('navigateToProperty').addEventListener('click', function() {
                     navigateToProperty();
@@ -504,8 +493,6 @@ WHERE lh.landholder_id = ?
             }
         });
     </script>
-
-
     <script>
         let currentImageIndex = 0;
         const imageSources = [
@@ -550,8 +537,6 @@ WHERE lh.landholder_id = ?
             document.getElementById(modalId).classList.remove('modal-open');
         }
     </script>
-
-
     <?php include 'user/user-footer.php'; ?>
 </body>
 

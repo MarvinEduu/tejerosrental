@@ -57,7 +57,6 @@ if ($landholderRatings) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick view</title>
     <link rel="icon" type="image/x-icon" href="images/logoer.png">
-
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.8.0/dist/full.min.css" rel="stylesheet" type="text/css" />
 
     <!-- Tailwind CSS -->
@@ -72,6 +71,30 @@ if ($landholderRatings) {
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 
+    <style>
+        .seller-profile img {
+            width: 100%;
+            height: auto;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            .seller-info {
+                margin-left: 2rem;
+            }
+
+            .seller-profile,
+            .seller-info {
+                flex: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -96,62 +119,64 @@ if ($landholderRatings) {
     <div class="container mx-auto flex flex-col md:flex-row">
         <!-- Left side - Seller information -->
 
-        <div class="box bg-white w-96 mx-4 md:mx-auto mt-4 rounded-lg shadow-md border border-gray-500 p-4 md:p-6 flex flex-col items-center justify-center lg:h-2/4">
-    <!-- Seller profile image -->
-    <div class="seller-profile mt-2 mb-4">
-        <img src="uploaded_image/<?= $seller['profile_picture']; ?>" alt="<?= $seller['full_name']; ?>" class="w-64 h-64 md:w-full md:h-64 object-cover rounded-md">
-    </div>
-    <!-- Seller information -->
-    <div class="seller-info text-center">
-        <h3 class="text-lg font-semibold"><?= $seller['full_name']; ?></h3>
-        <p><?= $seller['email']; ?></p>
+        <div class=" bg-white w-full md:w-96 mx-4 md:mx-auto mt-4 rounded-lg shadow-md border border-gray-300 p-4 md:p-6 flex flex-col items-center justify-center lg:h-2/4">
+            <!-- Seller profile image -->
+            <div class="seller-profile mt-2 mb-4">
+                <img src="uploaded_image/<?= $seller['profile_picture']; ?>" alt="<?= $seller['full_name']; ?>" class="w-full object-cover rounded-md" style="height: 16rem;">
+            </div>
 
-        <!-- Display Verification Tier -->
-        <p class="mt-2 text-sm text-gray-600"> <?= htmlspecialchars($seller['verification_tier']); ?></p>
+            <!-- Seller information -->
+            <div class="seller-info text-center">
+                <h3 class="text-lg font-semibold"><?= $seller['full_name']; ?></h3>
+                <p><?= $seller['email']; ?></p>
 
-        <!-- Display Rating -->
-        <div class="flex items-center justify-center mt-2">
-            <?php
-            // Display landholder's rating
-            echo '<div class="flex items-center mt-2">';
-            for ($i = 1; $i <= 5; $i++) {
-                if ($i <= $averageLandholderRating) {
-                    echo '<i class="fas fa-star text-yellow-500"></i>';
-                } else {
-                    echo '<i class="far fa-star text-gray-400"></i>';
-                }
-            }
-            echo "<span class='ml-2 text-gray-600'>($landholderRatingCount)</span>";
-            echo '</div>';
-            ?>
+                <!-- Display Verification Tier -->
+                <p class="mt-2 text-sm text-gray-600"> <?= htmlspecialchars($seller['verification_tier']); ?></p>
+
+                <!-- Display Rating -->
+                <div class="flex items-center justify-center mt-2">
+                    <?php
+                    // Display landholder's rating
+                    echo '<div class="flex items-center mt-2">';
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($i <= $averageLandholderRating) {
+                            echo '<i class="fas fa-star text-yellow-500"></i>';
+                        } else {
+                            echo '<i class="far fa-star text-gray-400"></i>';
+                        }
+                    }
+                    echo "<span class='ml-2 text-gray-600'>($landholderRatingCount)</span>";
+                    echo '</div>';
+                    ?>
+                </div>
+
+                <!-- Additional seller information -->
+                <div class="social-links mt-4 flex flex-wrap gap-2 md:gap-4 justify-center">
+                    <!-- Facebook link -->
+                    <a href="<?= $seller['facebook']; ?>" class="social-icon" title="Facebook" target="_blank">
+                        <i class="fab fa-facebook-square text-blue-600 text-3xl md:text-5xl"></i>
+                    </a>
+                    <!-- LinkedIn link -->
+                    <a href="<?= $seller['linkedin']; ?>" class="social-icon" title="LinkedIn" target="_blank">
+                        <i class="fab fa-linkedin text-blue-800 text-3xl md:text-5xl"></i>
+                    </a>
+                    <!-- Instagram link -->
+                    <a href="<?= $seller['instagram']; ?>" class="social-icon" title="Instagram" target="_blank">
+                        <i class="fab fa-instagram text-pink-600 text-3xl md:text-5xl"></i>
+                    </a>
+                    <!-- Message button as icon -->
+                    <a href="chat.php?receiver_id=<?= $seller['landholder_id']; ?>" class="bg-blue-600 text-white py-2 px-3 rounded-md hover:bg-gray-700">
+                        <i class="fas fa-comment-dots text-white-600 text-xl md:text-3xl"></i>
+                    </a>
+
+                </div>
+            </div>
         </div>
-
-        <!-- Additional seller information -->
-        <div class="social-links mt-4 flex flex-wrap gap-2 md:gap-4 justify-center">
-            <!-- Facebook link -->
-            <a href="<?= $seller['facebook']; ?>" class="social-icon" title="Facebook" target="_blank">
-                <i class="fab fa-facebook-square text-blue-600 text-3xl md:text-5xl"></i>
-            </a>
-            <!-- LinkedIn link -->
-            <a href="<?= $seller['linkedin']; ?>" class="social-icon" title="LinkedIn" target="_blank">
-                <i class="fab fa-linkedin text-blue-800 text-3xl md:text-5xl"></i>
-            </a>
-            <!-- Instagram link -->
-            <a href="<?= $seller['instagram']; ?>" class="social-icon" title="Instagram" target="_blank">
-                <i class="fab fa-instagram text-pink-600 text-3xl md:text-5xl"></i>
-            </a>
-            <!-- Message button as icon -->
-            <a href="chat.php?seller_id=<?= $seller['landholder_id']; ?>" class="bg-blue-600 text-white py-2 px-3 rounded-md hover:bg-gray-700">
-                <i class="fas fa-comment-dots text-white-600 text-xl md:text-3xl"></i>
-            </a>
-        </div>
-    </div>
-</div>
 
 
 
         <!-- Right side - Seller's properties -->
-        <div class="w-3/4 mx-8 md:p-8 mx-auto md:mx-4">
+        <div class="w-full md:w-3/4 mx-8 md:p-8 mx-auto md:mx-4">
             <p class="text-gray-600 mb-4">Showing <?= $totalProperties; ?> properties from seller.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 ">
                 <?php foreach ($propertiesForPage as $property) : ?>
@@ -170,21 +195,21 @@ if ($landholderRatings) {
                                 </div>
                                 <div class="flex justify-between items-center mt-2">
                                     <div class="name text-gray-600 flex items-center">
-                                        <i class='bx bx-map-alt bx-sm'></i>&nbsp; <?= $property['city']; ?>, <?= $property['houseType']; ?>
+                                        <i class='bx bx-map-alt bx-sm'></i>  <?= $property['city']; ?>, <?= $property['houseType']; ?>
                                     </div>
                                     <div class="flex items-center">
-                                        <i class='bx bx-bath mr-1 bx-sm'></i>&nbsp;
+                                        <i class='bx bx-bath mr-1 bx-sm'></i> 
                                         <span><?= $property['bathroomNum']; ?></span>
-                                        <i class='bx bx-bed ml-2 mr-1 bx-sm'></i>&nbsp;
+                                        <i class='bx bx-bed ml-2 mr-1 bx-sm'></i> 
                                         <span><?= $property['bedroomNum']; ?></span>
                                     </div>
                                 </div>
                                 <div class="flex justify-between items-center mt-2">
                                     <div class="status text-gray-600 flex items-center">
-                                        <i class='bx bx-coin-stack mr-1 bx-sm'></i>&nbsp;₱ <?= number_format($property['rentAmount'], 0, '.', ','); ?>
+                                        <i class='bx bx-coin-stack mr-1 bx-sm'></i> ₱ <?= number_format($property['rentAmount'], 0, '.', ','); ?>
                                     </div>
                                     <div class="size text-gray-600 flex items-center">
-                                        <i class='bx bx-ruler mr-1 bx-sm'></i>&nbsp;<?= $property['size']; ?> sqm
+                                        <i class='bx bx-ruler mr-1 bx-sm'></i> <?= $property['size']; ?> sqm
                                     </div>
                                 </div>
                             </div>
@@ -192,7 +217,6 @@ if ($landholderRatings) {
                     </form>
                 <?php endforeach; ?>
             </div>
-
             <div class="mt-8 mb-8 flex justify-center">
                 <!-- Pagination links -->
                 <?php
@@ -236,7 +260,6 @@ if ($landholderRatings) {
         </div>
     </div>
 </body>
-
 <?php include 'user/user-footer.php' ?>
 
 </html>
