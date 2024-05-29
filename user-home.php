@@ -149,7 +149,7 @@ session_start();
   <div class="hero h-screen max-h-screen" style="background-image: url('images/houses.jpg'); background-size: cover; background-position: center;">
     <div class="hero-overlay rounded-lg bg-opacity-70"></div>
     <div class="hero-content flex flex-col items-center justify-center text-center w-full px-4 sm:px-8 lg:px-16">
-      <div class="headline-container text-6xl font-bold uppercase text-white shadow-md">
+      <div class="headline-container text-5xl font-bold uppercase text-white shadow-md">
         <h1 class="headline">Skip the tedious process. Explore hassle-free property rentals.</h1>
         <h1 class="headline hidden">Discover your dream home with ease and comfort.</h1>
         <h1 class="headline hidden">Find the perfect property that fits your lifestyle.</h1>

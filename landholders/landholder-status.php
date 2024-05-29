@@ -70,7 +70,7 @@ if ($verificationTier == 'Fully Verified') {
 
 <body class="bg-gray-100 font-family-karla flex">
     <?php include 'landholder-header.php' ?>
-    <div class="container mt-2 overflow-y-auto ">
+    <div class="container my-2 overflow-y-auto ">
         <div class="card">
             <div class="card-header">
                 Seller Verification Status
@@ -118,7 +118,7 @@ if ($verificationTier == 'Fully Verified') {
                                 <?php else : ?>
                                     <i class="fas fa-hourglass-half text-warning text-lg"></i> <strong>Business permit is being reviewed, wait for admin's approval.</strong><br>
                                 <?php endif; ?>
-                                <img src="../images/verify.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 400px;">
+                                <img src="../images/verify.png" alt="Empty Illustration" class="mx-auto mt-4" style="max-width: 270px;">
                             <?php endif; ?> 
                         </li>
                     </ul>
